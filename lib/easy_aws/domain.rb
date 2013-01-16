@@ -39,7 +39,7 @@ module EasyAWS
       value = params[:value]
       value = [value] unless value.is_a?(Array)
       records = value.map do |v|
-        {value: 'ec2-23-22-206-201.compute-1.amazonaws.com'}
+        {value: v}
       end
       data = {
         hosted_zone_id: self.hosted_zone_id,
