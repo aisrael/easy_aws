@@ -4,7 +4,8 @@ module EasyAWS
   class Domain
     attr_accessor :name, :hosted_zone_id
 
-    def initialize(params = {})
+    def initialize(*args)
+      params = args.first.is_a?(Hash) ? args.shift : {name: args.first.to_s }
       self.name = params[:name] if params.key?(:name)
       self.hosted_zone_id = params[:hosted_zone_id] if params.key?(:hosted_zone_id)
     end
@@ -21,7 +22,7 @@ module EasyAWS
       puts "create_hosted_zone.response: #{response.inspect}"
       self.hosted_zone_id = response[:hosted_zone][:id]
     end
-    
+
     def delete_hosted_zone
       route53_client.delete_hosted_zone(id: hosted_zone_id)
     end
@@ -105,10 +106,10 @@ module EasyAWS
     end
 
     def get_change(*args)
-      id = if args.is_a?(Hash) && args.key?(:id)
-        args[:id]
+      id = if args.first.is_a?(Hash) && args.first.key?(:id)
+        args.first[:id]
       else
-        args.shift
+        args.first.to_s
       end
       route53_client.get_change(id: id)
     end
