@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "easy_aws"
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alistair A. Israel"]
-  s.date = "2013-01-15"
+  s.date = "2013-01-16"
   s.description = "TODO: longer description of your gem"
   s.email = "aisrael@gmail.com"
   s.extra_rdoc_files = [
@@ -44,6 +44,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<bundler>, ["~> 1.2"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.4"])
+      s.add_development_dependency(%q<uuid>, ["~> 2.3"])
       s.add_development_dependency(%q<aws-sdk>, ["~> 1.8"])
       s.add_development_dependency(%q<rspec>, ["~> 2.11"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
@@ -52,6 +53,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<bundler>, ["~> 1.2"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
+      s.add_dependency(%q<uuid>, ["~> 2.3"])
       s.add_dependency(%q<aws-sdk>, ["~> 1.8"])
       s.add_dependency(%q<rspec>, ["~> 2.11"])
       s.add_dependency(%q<rcov>, [">= 0"])
@@ -61,6 +63,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<bundler>, ["~> 1.2"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
+    s.add_dependency(%q<uuid>, ["~> 2.3"])
     s.add_dependency(%q<aws-sdk>, ["~> 1.8"])
     s.add_dependency(%q<rspec>, ["~> 2.11"])
     s.add_dependency(%q<rcov>, [">= 0"])
