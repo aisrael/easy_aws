@@ -20,6 +20,17 @@ describe EasyAWS::Domain do
   end
 
   let(:client) { subject.send(:route53_client) }
+  
+  describe '#create_hosted_zone' do
+    it 'raises an error if a hosted_zone_id is already present' do
+      expect {
+        subject.create_hosted_zone
+      }.to raise_error("hosted_zone_id already specified: #{HOSTED_ZONE_ID}")
+    end
+    it 'returns the newly created hosted zone id' do
+      client.stub(:create_hosted_)
+    end
+  end
 
   describe '#resource_record_sets' do
     before(:each) do
@@ -29,7 +40,7 @@ describe EasyAWS::Domain do
           {:name=>"example.com.", :type=>"NS", :ttl=>172800, :resource_records=>[{:value=>"ns-1018.awsdns-63.net."}, {:value=>"ns-1645.awsdns-13.co.uk."}, {:value=>"ns-1384.awsdns-45.org."}, {:value=>"ns-156.awsdns-19.com."}]},
           {:name=>"example.com.", :type=>"SOA", :ttl=>900, :resource_records=>[{:value=>"ns-1018.awsdns-63.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"}]},
           {:name=>"example.com.", :type=>"TXT", :ttl=>86400, :resource_records=>[{:value=>"\"google-site-verification=dO9Xtma4XjWm-QRdkMBQMcJdnwPOiux_lIE1kXSaRMY\""}]},
-          {:name=>"cocobeach.example.com.", :type=>"CNAME", :ttl=>300, :resource_records=>[{:value=>"ec2-23-22-206-201.compute-1.amazonaws.com"}]},
+          {:name=>"www.example.com.", :type=>"CNAME", :ttl=>300, :resource_records=>[{:value=>"ec2-23-22-206-201.compute-1.amazonaws.com"}]},
           {:name=>"mail.example.com.", :type=>"CNAME", :ttl=>3600, :resource_records=>[{:value=>"ghs.googlehosted.com"}]}
         ], 
         :is_truncated=>false, 
@@ -83,6 +94,22 @@ describe EasyAWS::Domain do
   end
 
   describe 'Integration Test', :integration => true do
+    it 'works' do
+      domain_name = load_config['domain_name'] || fail("No domain name configured in config.yml")
+      domain = EasyAWS::Domain.new name: domain_name
+      domain.create_hosted_zone
 
+      domain.resource_record_sets.count.should eq(2)
+
+      expect {
+        domain.create_subdomain name: 'test'
+      }.to change {domain.resource_record_sets.count}.by(1)
+
+      begin
+        response = domain.delete_hosted_zone
+        puts response.inspect
+        chginfo_id = dhz[:change_info][:id]
+      end
+    end
   end
 end
