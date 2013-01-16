@@ -12,7 +12,8 @@ end
 require 'rake'
 
 require 'jeweler'
-require 'lib/easy_aws/version'
+require './lib/easy_aws/version.rb'
+
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "easy_aws"
@@ -23,7 +24,9 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{TODO: longer description of your gem}
   gem.email = "aisrael@gmail.com"
   gem.authors = ["Alistair A. Israel"]
-  # dependencies defined in Gemfile
+
+  gem.files = `git ls-files`.split("\n").reject {|s| File.basename(s).chars.first == '.' }
+  gem.test_files = `git ls-files -- {test,spec}/*`.split("\n")
 end
 Jeweler::RubygemsDotOrgTasks.new
 
@@ -34,13 +37,14 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-require 'rcov/rcovtask'
-Rcov::RcovTask.new do |test|
-  test.libs << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-  test.rcov_opts << '--exclude "gems/*"'
-end
+# Replace with simplecov
+# require 'rcov/rcovtask'
+# Rcov::RcovTask.new do |test|
+  # test.libs << 'test'
+  # test.pattern = 'test/**/test_*.rb'
+  # test.verbose = true
+  # test.rcov_opts << '--exclude "gems/*"'
+# end
 
 task :default => :test
 
