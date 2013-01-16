@@ -15,12 +15,24 @@ Right now, `easy_aws` only provides a convenience wrapper around AWS Route 53 AP
     
     # Then, use EasyAWS convenience classes
     domain = EasyAWS::Domain.new 'example.com'
+    
+    # Create a new hosted zone
     domain.create_hosted_zone                               # "/hosted_zone/5IHFJ3DUWGB7G"
+    
+    # Query the record sets
     domain.resource_record_sets.count                       # 2
+    domain.resource_record_sets(type: 'NS').first           # #<EasyAWS::Domain::ResourceRecordSet::NS ...>
+    
+    # Create a subdomain
     domain.create_subdomain 'test'                          # {:change_info => { :id => "/change/T04OEV0PSKAYZ", ...
     domain.get_change "/change/T04OEV0PSKAYZ"               # {:change_info => { :status => 'INSYNC', ...
+    domain.resource_record_sets.count                       # 3
+    
+    # Delete a subdomain
     domain.delete_subdomain 'test'                          # {:change_info => { :id => "/change/P0VV3D3SWM6J7", ...
-    domain.delete_hosted_noze                               # {:change_info => { :id => "/change/QZEMEPSV8A6EA", ...
+    
+    # Delete the hosted zone
+    domain.delete_hosted_zone                               # {:change_info => { :id => "/change/QZEMEPSV8A6EA", ...
 
 Contributing to easy_aws
 ========
