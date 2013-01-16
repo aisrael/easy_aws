@@ -10,6 +10,7 @@ group :development do
   gem 'rdoc', '~> 3.12'
   gem 'jeweler', '~> 1.8.4'
 
+  gem 'uuid', '~> 2.3'
   gem 'aws-sdk', '~> 1.8'
 
   # Use rspec for tests
