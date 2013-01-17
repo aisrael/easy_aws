@@ -49,7 +49,7 @@ describe EasyAWS::Domain do
           :submitted_at => Time.now.utc
         },
         :delegation_set => {
-          :name_servers => [ '8.8.8.8', '8.8.8.4' ]
+          :name_servers => %w(ns-1094.awsdns-08.org ns-955.awsdns-55.net ns-1716.awsdns-22.co.uk ns-273.awsdns-34.com)
         }
       })
       result = subject.create_hosted_zone :caller_reference => ref
