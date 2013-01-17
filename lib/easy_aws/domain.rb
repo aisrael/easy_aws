@@ -17,14 +17,12 @@ module EasyAWS
         name: self.name,
         caller_reference: caller_reference
       }
-      puts "create_hosted_zone.options: #{options.inspect}"
       response = route53_client.create_hosted_zone(options)
-      puts "create_hosted_zone.response: #{response.inspect}"
       self.hosted_zone_id = response[:hosted_zone][:id]
     end
 
     def delete_hosted_zone
-      route53_client.delete_hosted_zone(id: hosted_zone_id)
+      ChangeInfo.from_response route53_client.delete_hosted_zone(id: hosted_zone_id)
     end
 
     def resource_record_sets(params = {})
@@ -74,7 +72,7 @@ module EasyAWS
           ]
         }
       }
-      route53_client.change_resource_record_sets(options)
+      ChangeInfo.from_response route53_client.change_resource_record_sets(options)
     end
 
     def delete_subdomain(*args)
@@ -102,7 +100,7 @@ module EasyAWS
           ]
         }
       }
-      route53_client.change_resource_record_sets(options)
+      ChangeInfo.from_response route53_client.change_resource_record_sets(options)
     end
 
     def get_change(*args)
@@ -111,7 +109,19 @@ module EasyAWS
       else
         args.first.to_s
       end
-      route53_client.get_change(id: id)
+      ChangeInfo.from_response route53_client.get_change(id: id)
+    end
+
+    class ChangeInfo
+      ATTRIBUTES = [:id, :status, :submitted_at, :comment]
+      attr_accessor(*ATTRIBUTES)
+      def self.from_response(hash = {})
+        raise "#{hash} has no :change_info" unless hash.key?(:change_info)
+        ChangeInfo.new(hash[:change_info])
+      end 
+      def initialize(params = {})
+        ATTRIBUTES.each {|sym| self.send("#{sym}=", params[sym])}
+      end
     end
 
     class ResourceRecordSet

@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+require 'uuid'
 require 'time'
 
 HOSTED_ZONE_ID = 'Z5EMV0UQ55K3F'
@@ -22,13 +23,37 @@ describe EasyAWS::Domain do
   let(:client) { subject.send(:route53_client) }
   
   describe '#create_hosted_zone' do
+    subject {
+      EasyAWS::Domain.new name: 'example.com'
+    }
     it 'raises an error if a hosted_zone_id is already present' do
+      subject.hosted_zone_id = HOSTED_ZONE_ID
       expect {
         subject.create_hosted_zone
       }.to raise_error("hosted_zone_id already specified: #{HOSTED_ZONE_ID}")
     end
     it 'returns the newly created hosted zone id' do
-      client.stub(:create_hosted_)
+      id  = rand(36**13).to_s(36).upcase
+      ref = UUID.new.generate
+
+      client.stub(:create_hosted_zone).with(name: 'example.com', caller_reference: ref).and_return({
+        :hosted_zone => {
+          :id => "/hosted_zone/#{id}",
+          :name => 'example.com',
+          :caller_reference => ref,
+          :resource_record_set_count => 2
+        },
+        :change_info => {
+          :id => rand(36**13).to_s(36).upcase,
+          :status => 'PENDING',
+          :submitted_at => Time.now.utc
+        },
+        :delegation_set => {
+          :name_servers => [ '8.8.8.8', '8.8.8.4' ]
+        }
+      })
+      result = subject.create_hosted_zone :caller_reference => ref
+      result.should eq("/hosted_zone/#{id}")
     end
   end
 
@@ -51,6 +76,7 @@ describe EasyAWS::Domain do
       rrs = subject.resource_record_sets
       rrs.should_not be_nil
       rrs.count.should eq(6)
+      rrs.each {|rr| rr.should be_a(EasyAWS::Domain::ResourceRecordSet)}
     end
     it 'accepts can filter by type' do
       rrs = subject.resource_record_sets type: 'CNAME'
@@ -89,7 +115,32 @@ describe EasyAWS::Domain do
       }
       client.should_receive(:change_resource_record_sets).with(request).and_return(response)
 
-      subject.create_subdomain name: 'test', value: 'www.example.com'
+      result = subject.create_subdomain name: 'test', value: 'www.example.com'
+      result.should be_a(EasyAWS::Domain::ChangeInfo)
+    end
+  end
+  
+  describe EasyAWS::Domain::ChangeInfo do
+    SUBMIT_TIME = Time.parse('2013-01-14 11:14:23 UTC')
+    CHANGE_INFO_HASH = { :id => '/change/C3J2ANQZTMF3QM', 
+        :status =>'PENDING', 
+        :submitted_at => SUBMIT_TIME, 
+        :comment => 'Create test.example.com CNAME' }
+    it 'accepts a hash initializer' do
+      change_info = EasyAWS::Domain::ChangeInfo.new CHANGE_INFO_HASH
+      change_info.id.should eq('/change/C3J2ANQZTMF3QM')
+      change_info.status.should eq('PENDING')
+      change_info.submitted_at.should eq(SUBMIT_TIME)
+      change_info.comment.should eq('Create test.example.com CNAME')
+    end
+    describe '.from_response' do
+      it 'extracts the :change_info from the response hash' do
+        change_info = EasyAWS::Domain::ChangeInfo.from_response :change_info => CHANGE_INFO_HASH
+        change_info.id.should eq('/change/C3J2ANQZTMF3QM')
+        change_info.status.should eq('PENDING')
+        change_info.submitted_at.should eq(SUBMIT_TIME)
+        change_info.comment.should eq('Create test.example.com CNAME')
+      end
     end
   end
 
@@ -102,7 +153,8 @@ describe EasyAWS::Domain do
       domain.resource_record_sets.count.should eq(2)
 
       expect {
-        domain.create_subdomain name: 'test'
+        resp = domain.create_subdomain name: 'test'
+        resp[T]
       }.to change {domain.resource_record_sets.count}.by(1)
 
       begin
