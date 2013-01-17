@@ -153,8 +153,10 @@ describe EasyAWS::Domain do
       domain.resource_record_sets.count.should eq(2)
 
       expect {
-        resp = domain.create_subdomain name: 'test'
-        resp[T]
+        ci = domain.create_subdomain name: 'test'
+        while ci.pending?
+          ci = domain.get_change(ci.id)
+        end
       }.to change {domain.resource_record_sets.count}.by(1)
 
       begin
