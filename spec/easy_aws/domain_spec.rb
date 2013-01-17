@@ -146,7 +146,7 @@ describe EasyAWS::Domain do
 
   describe 'Integration Test', :integration => true do
 
-    DEFAULT_WAIT_UNTIL = 1.minute
+    DEFAULT_WAIT_UNTIL = 1 * 60 * 60
 
     def wait_until_in_sync(domain, &block)
       ci = block.call
@@ -161,8 +161,7 @@ describe EasyAWS::Domain do
     it 'works' do
       domain_name = load_config['domain_name'] || fail("No domain name configured in config.yml")
       domain = EasyAWS::Domain.new name: domain_name
-      ci = wait_until_in_sync(domain) { domain.create_hosted_zone }
-      fail 'create_subdomain timed out' unless ci
+      domain.create_hosted_zone
 
       domain.resource_record_sets.count.should eq(2)
 
