@@ -20,8 +20,8 @@ Jeweler::Tasks.new do |gem|
   gem.version = EasyAWS::Version::STRING
   gem.homepage = "http://github.com/AlistairIsrael/easy_aws"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{A Ruby gem that provides a convenient, object-oriented wrapper around the 'low-level' aws-sdk API}
+  gem.description = %Q{Amazon's Ruby SDK, aws-sdk exposes relatively low-level AWS API operations. easy_aws provides an easier to use, object-oriented wrapper around those.}
   gem.email = "aisrael@gmail.com"
   gem.authors = ["Alistair A. Israel"]
 
