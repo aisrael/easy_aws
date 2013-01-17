@@ -146,7 +146,8 @@ describe EasyAWS::Domain do
 
   describe 'Integration Test', :integration => true do
 
-    DEFAULT_WAIT_UNTIL = 1 * 60 * 60
+    DEFAULT_WAIT_UNTIL = 60 * 1000 # 1 minute
+    DEFAULT_SLEEP = 3 # 3 seconds
 
     def wait_until_in_sync(domain, &block)
       ci = block.call
@@ -154,6 +155,7 @@ describe EasyAWS::Domain do
       while ci.pending? && Time.new < timeout
         ci = domain.get_change(ci.id)
         return ci if ci.in_sync?
+        sleep(DEFAULT_SLEEP)
       end
       return nil
     end
@@ -161,19 +163,28 @@ describe EasyAWS::Domain do
     it 'works' do
       domain_name = load_config['domain_name'] || fail("No domain name configured in config.yml")
       domain = EasyAWS::Domain.new name: domain_name
-      domain.create_hosted_zone
-
-      domain.resource_record_sets.count.should eq(2)
-
-      expect {
-        ci = wait_until_in_sync(domain) { domain.create_subdomain name: 'test' }
-        fail 'create_subdomain timed out' unless ci
-      }.to change {domain.resource_record_sets.count}.by(1)
+      id = domain.create_hosted_zone
+      puts "Hosted zone #{id} created"
 
       begin
+        domain.resource_record_sets.count.should eq(2)
+
+        expect {
+          ci = wait_until_in_sync(domain) { domain.create_subdomain name: 'test', value: "www.#{domain_name}" }
+          fail 'create_subdomain timed out' unless ci
+        }.to change {domain.resource_record_sets.count}.by(1)
+        puts "test.#{domain_name} created"
+
+        expect {
+          ci = wait_until_in_sync(domain) { domain.delete_subdomain 'test' }
+          fail 'delete_subdomain timed out' unless ci
+        }.to change {domain.resource_record_sets.count}.by(-1)
+        puts "test.#{domain_name} deleted"
+
       ensure
         ci = wait_until_in_sync(domain) { domain.delete_hosted_zone }
         fail 'delete_hosted_zone timed out' unless ci
+        puts "Hosted zone #{id} deleted"
       end
     end
   end
