@@ -5,22 +5,22 @@
 
 Gem::Specification.new do |s|
   s.name = "easy_aws"
-  s.version = "0.1.1"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alistair A. Israel"]
-  s.date = "2013-01-16"
-  s.description = "TODO: longer description of your gem"
+  s.date = "2013-01-17"
+  s.description = "Amazon's Ruby SDK, aws-sdk exposes relatively low-level AWS API operations. easy_aws provides an easier to use, object-oriented wrapper around those."
   s.email = "aisrael@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
-    "README.rdoc"
+    "README.md"
   ]
   s.files = [
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
-    "README.rdoc",
+    "README.md",
     "Rakefile",
     "easy_aws.gemspec",
     "lib/easy_aws.rb",
@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
-  s.summary = "TODO: one-line summary of your gem"
+  s.summary = "A Ruby gem that provides a convenient, object-oriented wrapper around the 'low-level' aws-sdk API"
   s.test_files = ["spec/easy_aws/domain_spec.rb", "spec/easy_aws_spec.rb", "spec/spec_helper.rb"]
 
   if s.respond_to? :specification_version then
