@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+require 'uuid'
 require 'time'
 
 HOSTED_ZONE_ID = 'Z5EMV0UQ55K3F'
@@ -22,13 +23,37 @@ describe EasyAWS::Domain do
   let(:client) { subject.send(:route53_client) }
   
   describe '#create_hosted_zone' do
+    subject {
+      EasyAWS::Domain.new name: 'example.com'
+    }
     it 'raises an error if a hosted_zone_id is already present' do
+      subject.hosted_zone_id = HOSTED_ZONE_ID
       expect {
         subject.create_hosted_zone
       }.to raise_error("hosted_zone_id already specified: #{HOSTED_ZONE_ID}")
     end
     it 'returns the newly created hosted zone id' do
-      client.stub(:create_hosted_)
+      id  = rand(36**13).to_s(36).upcase
+      ref = UUID.new.generate
+
+      client.stub(:create_hosted_zone).with(name: 'example.com', caller_reference: ref).and_return({
+        :hosted_zone => {
+          :id => "/hosted_zone/#{id}",
+          :name => 'example.com',
+          :caller_reference => ref,
+          :resource_record_set_count => 2
+        },
+        :change_info => {
+          :id => rand(36**13).to_s(36).upcase,
+          :status => 'PENDING',
+          :submitted_at => Time.now.utc
+        },
+        :delegation_set => {
+          :name_servers => %w(ns-1094.awsdns-08.org ns-955.awsdns-55.net ns-1716.awsdns-22.co.uk ns-273.awsdns-34.com)
+        }
+      })
+      result = subject.create_hosted_zone :caller_reference => ref
+      result.should eq("/hosted_zone/#{id}")
     end
   end
 
@@ -51,6 +76,7 @@ describe EasyAWS::Domain do
       rrs = subject.resource_record_sets
       rrs.should_not be_nil
       rrs.count.should eq(6)
+      rrs.each {|rr| rr.should be_a(EasyAWS::Domain::ResourceRecordSet)}
     end
     it 'accepts can filter by type' do
       rrs = subject.resource_record_sets type: 'CNAME'
@@ -89,26 +115,76 @@ describe EasyAWS::Domain do
       }
       client.should_receive(:change_resource_record_sets).with(request).and_return(response)
 
-      subject.create_subdomain name: 'test', value: 'www.example.com'
+      result = subject.create_subdomain name: 'test', value: 'www.example.com'
+      result.should be_a(EasyAWS::Domain::ChangeInfo)
+    end
+  end
+  
+  describe EasyAWS::Domain::ChangeInfo do
+    SUBMIT_TIME = Time.parse('2013-01-14 11:14:23 UTC')
+    CHANGE_INFO_HASH = { :id => '/change/C3J2ANQZTMF3QM', 
+        :status =>'PENDING', 
+        :submitted_at => SUBMIT_TIME, 
+        :comment => 'Create test.example.com CNAME' }
+    it 'accepts a hash initializer' do
+      change_info = EasyAWS::Domain::ChangeInfo.new CHANGE_INFO_HASH
+      change_info.id.should eq('/change/C3J2ANQZTMF3QM')
+      change_info.status.should eq('PENDING')
+      change_info.submitted_at.should eq(SUBMIT_TIME)
+      change_info.comment.should eq('Create test.example.com CNAME')
+    end
+    describe '.from_response' do
+      it 'extracts the :change_info from the response hash' do
+        change_info = EasyAWS::Domain::ChangeInfo.from_response :change_info => CHANGE_INFO_HASH
+        change_info.id.should eq('/change/C3J2ANQZTMF3QM')
+        change_info.status.should eq('PENDING')
+        change_info.submitted_at.should eq(SUBMIT_TIME)
+        change_info.comment.should eq('Create test.example.com CNAME')
+      end
     end
   end
 
   describe 'Integration Test', :integration => true do
+
+    DEFAULT_WAIT_UNTIL = 60 * 1000 # 1 minute
+    DEFAULT_SLEEP = 3 # 3 seconds
+
+    def wait_until_in_sync(domain, &block)
+      ci = block.call
+      timeout = Time.now + DEFAULT_WAIT_UNTIL
+      while ci.pending? && Time.new < timeout
+        ci = domain.get_change(ci.id)
+        return ci if ci.in_sync?
+        sleep(DEFAULT_SLEEP)
+      end
+      return nil
+    end
+
     it 'works' do
       domain_name = load_config['domain_name'] || fail("No domain name configured in config.yml")
       domain = EasyAWS::Domain.new name: domain_name
-      domain.create_hosted_zone
-
-      domain.resource_record_sets.count.should eq(2)
-
-      expect {
-        domain.create_subdomain name: 'test'
-      }.to change {domain.resource_record_sets.count}.by(1)
+      id = domain.create_hosted_zone
+      puts "Hosted zone #{id} created"
 
       begin
-        response = domain.delete_hosted_zone
-        puts response.inspect
-        chginfo_id = dhz[:change_info][:id]
+        domain.resource_record_sets.count.should eq(2)
+
+        expect {
+          ci = wait_until_in_sync(domain) { domain.create_subdomain name: 'test', value: "www.#{domain_name}" }
+          fail 'create_subdomain timed out' unless ci
+        }.to change {domain.resource_record_sets.count}.by(1)
+        puts "test.#{domain_name} created"
+
+        expect {
+          ci = wait_until_in_sync(domain) { domain.delete_subdomain 'test' }
+          fail 'delete_subdomain timed out' unless ci
+        }.to change {domain.resource_record_sets.count}.by(-1)
+        puts "test.#{domain_name} deleted"
+
+      ensure
+        ci = wait_until_in_sync(domain) { domain.delete_hosted_zone }
+        fail 'delete_hosted_zone timed out' unless ci
+        puts "Hosted zone #{id} deleted"
       end
     end
   end
