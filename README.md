@@ -36,16 +36,18 @@ domain.delete_subdomain 'test'                          # {:change_info => { :id
 domain.delete_hosted_zone                               # {:change_info => { :id => "/change/QZEMEPSV8A6EA", ...
 ````
 
-Testing
+Integration Testing
 --------
 Add `spec/config.yml`, with the following contents
 ````
 access_key_id: YOUR_AWS_ACCESS_KEY_ID
 secret_access_key: YOUR_AWS_SECRET_ACCESS_KEY
-domain_name: 'example.com'
+domain_name: YOUR_DOMAIN_NAME # e.g. 'example.com'
 ````
 
-And run the live integration tests (will perform actual Route 53 calls) using `rspec --tag integration`
+And run the live integration tests (which will perform actual Route 53 calls) with
+
+    rspec --tag integration
 
 Contributing to easy_aws
 ========
