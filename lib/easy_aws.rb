@@ -1,6 +1,7 @@
 require 'aws'
 
-require 'easy_aws/domain'
+module EasyAWS
+  
+  autoload :Domain, 'easy_aws/domain' 
 
-module EasyAWS  
 end
