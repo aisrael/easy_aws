@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'easy_aws/cloud_formation'
 
 describe EasyAWS::CloudFormation::Template::ParameterCollection do
-  
+
   specify { is_a? Array }
   specify { respond_to? :build }
   describe '#build' do

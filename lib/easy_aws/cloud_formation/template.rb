@@ -35,7 +35,22 @@ module EasyAWS::CloudFormation
       include ParameterizedInitializer
       TYPES = [:string, :number, :list]
       TYPES_MAP = {string: 'String', number: 'Number', list: 'CommaDelimitedList'}
-      attr_accessor :name, :type, :description, :default
+      attr_accessor :name, :type, :description, :default, :no_echo, :min_length, :max_length
+
+      FIELDS_MAP = {
+        description: 'Description',
+        default: 'Default',
+        no_echo: 'NoEcho',
+        min_length: 'MinLength',
+        max_length: 'MaxLength'
+      }
+      def to_h
+        FIELDS_MAP.each_with_object('Type' => TYPES_MAP[type]) do |(method, key), h|
+          if v = self.send(method)
+            h[key] = v
+          end
+        end
+      end
     end
 
     class ParameterCollection < Array
@@ -48,15 +63,10 @@ module EasyAWS::CloudFormation
         end
       }
       def to_h
-        each_with_object({}) {|parameter, h|
-          h[parameter.name] = {}.tap {|p|
-            p['Type'] = Parameter::TYPES_MAP[parameter.type]
-            p['Description'] = parameter.description unless parameter.description.nil? 
-          }
-        }
+        each_with_object({}) {|parameter, h| h[parameter.name] = parameter.to_h }
       end
     end
-    
+
     require 'delegate'
 
     class DSL < DelegateClass(Template)

@@ -31,12 +31,11 @@ describe EasyAWS::CloudFormation::Template do
         number 'Number parameter'
         string 'String parameter'
       end
-      $stderr.puts "s: #{s} (#{s.class})"
       expect(s).to be_a(EasyAWS::CloudFormation::Template::ParameterCollection)
       expect(subject.parameters.size).to eq(2)
     end
   end
-  
+
   it 'works with a full test' do
     template = EasyAWS::CloudFormation::Template.new do
       description = 'Template description'
