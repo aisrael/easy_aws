@@ -1,3 +1,4 @@
+require 'active_support/core_ext'
 require 'active_support/concern'
 
 require 'json'
@@ -35,15 +36,15 @@ module EasyAWS::CloudFormation
       include ParameterizedInitializer
       TYPES = [:string, :number, :list]
       TYPES_MAP = {string: 'String', number: 'Number', list: 'CommaDelimitedList'}
-      attr_accessor :name, :type, :description, :default, :no_echo, :min_length, :max_length
 
-      FIELDS_MAP = {
-        description: 'Description',
-        default: 'Default',
-        no_echo: 'NoEcho',
-        min_length: 'MinLength',
-        max_length: 'MaxLength'
+      attr_accessor :name, :type 
+
+      FIELDS_MAP = [:description, :default, :no_echo, :allowed_values, :allowed_pattern, 
+        :min_length, :max_length, :min_value, :max_value, :constraint_description].each_with_object({}) {|s, h|
+          attr_accessor s 
+          h[s] = s.to_s.classify 
       }
+
       def to_h
         FIELDS_MAP.each_with_object('Type' => TYPES_MAP[type]) do |(method, key), h|
           if v = self.send(method)
