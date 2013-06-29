@@ -23,15 +23,15 @@ describe EasyAWS::CloudFormation::Template do
   end
 
   describe '#parameters' do
-    specify { is_a? EasyAWS::CloudFormation::Template::ParameterCollection }
-    it 'accepts a block for defining parameters, and evaluates it in the ParameterCollection context' do
+    specify { is_a? EasyAWS::CloudFormation::Template::Parameter::Collection }
+    it 'accepts a block for defining parameters, and evaluates it in the Parameter::Collection context' do
       s = nil
       subject.parameters do
         s = self
         number 'Number parameter'
         string 'String parameter'
       end
-      expect(s).to be_a(EasyAWS::CloudFormation::Template::ParameterCollection)
+      expect(s).to be_a(EasyAWS::CloudFormation::Template::Parameter::Collection)
       expect(subject.parameters.size).to eq(2)
     end
   end

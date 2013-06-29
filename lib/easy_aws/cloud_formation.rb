@@ -1,7 +1,7 @@
 module EasyAWS
   module CloudFormation  
     autoload :Template, 'easy_aws/cloud_formation/template'
-    
+
     class << self
       def template(params = {}, &block)
         Template::Builder.new(params).tap {|builder|

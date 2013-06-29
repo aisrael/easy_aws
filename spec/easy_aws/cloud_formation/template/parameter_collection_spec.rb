@@ -2,7 +2,7 @@ require 'spec_helper'
 
 require 'easy_aws/cloud_formation'
 
-describe EasyAWS::CloudFormation::Template::ParameterCollection do
+describe EasyAWS::CloudFormation::Template::Parameter::Collection do
 
   specify { is_a? Array }
   specify { respond_to? :build }
@@ -57,7 +57,7 @@ describe EasyAWS::CloudFormation::Template::ParameterCollection do
   end
   specify { respond_to? :to_h }
   describe '#to_h' do
-    it 'returns the ParameterCollection as a hash' do
+    it 'returns the Parameter::Collection as a hash' do
       subject.string 'String parameter'
       subject.number 'Number parameter'
       h = subject.to_h
