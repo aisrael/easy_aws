@@ -27,7 +27,7 @@ module EasyAWS::CloudFormation
       @parameters.instance_eval(&block) if block_given?
       @parameters
     end
-    
+
     class Parameter
       include ParameterizedInitializer
       TYPES = [:string, :number, :list]
@@ -57,6 +57,10 @@ module EasyAWS::CloudFormation
       def method_missing(field, value)
         instance_variable_set("@#{field}", value)
       end
+    end
+    
+    def to_json
+      to_hash.to_json
     end
   end
 end

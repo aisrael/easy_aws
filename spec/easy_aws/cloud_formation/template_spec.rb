@@ -24,21 +24,16 @@ describe EasyAWS::CloudFormation::Template do
 
   describe '#parameters' do
     specify { is_a? EasyAWS::CloudFormation::Template::ParameterCollection }
-    it 'provides a Parameter builder' do
-      subject.parameters.build name: 'Test parameter name'
-    end
-    specify 'build returns the Parameter' do
-      param = subject.parameters.build name: 'Test parameter name'
-      expect(param).to be_a(EasyAWS::CloudFormation::Template::Parameter)
-      expect(param.name).to eq('Test parameter name')
-    end
     it 'accepts a block for defining parameters, and evaluates it in the ParameterCollection context' do
       s = nil
       subject.parameters do
         s = self
+        number 'Number parameter'
+        string 'String parameter'
       end
-      $stderr.puts "s: #{s}"
+      $stderr.puts "s: #{s} (#{s.class})"
       expect(s).to be_a(EasyAWS::CloudFormation::Template::ParameterCollection)
+      expect(subject.parameters.size).to eq(2)
     end
   end
   
