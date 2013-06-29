@@ -19,13 +19,13 @@ module EasyAWS::CloudFormation
     DEFAULT_AWS_TEMPLATE_FORMAT_VERSION = '2010-09-09'
 
     autoload :Parameter, 'easy_aws/cloud_formation/template/parameter'
+    autoload :Mappings, 'easy_aws/cloud_formation/template/mappings'
 
-    attr_reader :aws_template_format_version, :mappings, :resources, :outputs
+    attr_reader :aws_template_format_version, :resources, :outputs
     attr_accessor :description
 
     def initialize(params = {}, &block)
       super
-      [:mappings, :resources, :outputs].each {|s| self.instance_variable_set("@#{s}", [])}
       DSL.new(self).instance_eval(&block) if block_given?
     end
 
@@ -33,6 +33,12 @@ module EasyAWS::CloudFormation
       @parameters ||= Parameter::Collection.new
       @parameters.instance_eval(&block) if block_given?
       @parameters
+    end
+
+    def mappings(&block)
+      @mappings ||= Mappings.new
+      @mappings.instance_eval(&block) if block_given?
+      @mappings
     end
 
     require 'delegate'
@@ -51,6 +57,7 @@ module EasyAWS::CloudFormation
       {'AWSTemplateFormatVersion' => DEFAULT_AWS_TEMPLATE_FORMAT_VERSION}.tap {|h|
         h['Description'] = @description unless @description.nil?
         h['Parameters'] = @parameters.to_h unless @parameters.nil? || @parameters.empty?
+        h['Mappings'] = @mappings.to_h unless @mappings.nil? || @mappings.empty?
       }
     end
 
