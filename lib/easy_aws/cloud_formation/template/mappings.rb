@@ -6,9 +6,11 @@ module EasyAWS
           super(@mappings = {})
         end
 
-        def map(name, mapping)
+        def map(name, mapping = {}, &block)
           raise 'Mappings only accepts a Hash as values' unless mapping.is_a? Hash
           @mappings[name] = mapping
+          yield mapping if block_given?
+          mapping
         end
 
         def to_h
