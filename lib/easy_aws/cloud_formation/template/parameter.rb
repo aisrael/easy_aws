@@ -23,12 +23,12 @@ module EasyAWS
         end
 
         class Collection < Array
-          def build(options = {})
-            Parameter.new(options).tap { |parameter| push parameter }
+          def build(name, type, options = {})
+            Parameter.new(options.merge({name: name, type: type})).tap { |parameter| push parameter }
           end
           Parameter::TYPES.each {|type|
             define_method type do |name, options = {}|
-              build(options.merge(name: name, type: type))
+              build(name, type, options)
             end
           }
           def to_h

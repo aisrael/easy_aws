@@ -51,6 +51,12 @@ module EasyAWS::CloudFormation
       def description(description)
         @template.description = description
       end
+      def parameter(name, type, options = {})
+        parameters.build(name, type, options)
+      end
+      def mapping(*args)
+        mappings.map(*args)
+      end
     end
 
     def to_h
