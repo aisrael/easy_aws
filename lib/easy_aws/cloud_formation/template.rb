@@ -1,5 +1,7 @@
 require 'active_support/concern'
 
+require 'json'
+
 module ParameterizedInitializer extend ActiveSupport::Concern
   def initialize(params = {})
     params.each {|k, v|
@@ -17,9 +19,10 @@ module EasyAWS::CloudFormation
     attr_reader :aws_template_format_version, :mappings, :resources, :outputs
     attr_accessor :description
 
-    def initialize(params = {})
+    def initialize(params = {}, &block)
       super
       [:mappings, :resources, :outputs].each {|s| self.instance_variable_set("@#{s}", [])}
+      DSL.new(self).instance_eval(&block) if block_given?
     end
 
     def parameters(&block)
@@ -31,7 +34,8 @@ module EasyAWS::CloudFormation
     class Parameter
       include ParameterizedInitializer
       TYPES = [:string, :number, :list]
-      attr_accessor :name, :type, :default
+      TYPES_MAP = {string: 'String', number: 'Number', list: 'CommaDelimitedList'}
+      attr_accessor :name, :type, :description, :default
     end
 
     class ParameterCollection < Array
@@ -43,24 +47,37 @@ module EasyAWS::CloudFormation
           build(options.merge(name: name, type: type))
         end
       }
-    end
-
-    class Builder
-      def initialize(params = {})
-        params.each {|k, v| self.instance_variable_set("@#{k}", v)}
-      end
-      def build
-        Template.new.tap {|template|
-          template.description = @description unless @description.nil?
+      def to_h
+        each_with_object({}) {|parameter, h|
+          h[parameter.name] = {}.tap {|p|
+            p['Type'] = Parameter::TYPES_MAP[parameter.type]
+            p['Description'] = parameter.description unless parameter.description.nil? 
+          }
         }
-      end
-      def method_missing(field, value)
-        instance_variable_set("@#{field}", value)
       end
     end
     
+    require 'delegate'
+
+    class DSL < DelegateClass(Template)
+      attr_accessor :template
+      def initialize(template)
+        super(@template = template)
+      end
+      def description(description)
+        @template.description = description
+      end
+    end
+
+    def to_h
+      {'AWSTemplateFormatVersion' => DEFAULT_AWS_TEMPLATE_FORMAT_VERSION}.tap {|h|
+        h['Description'] = @description unless @description.nil?
+        h['Parameters'] = @parameters.to_h unless @parameters.nil? || @parameters.empty?
+      }
+    end
+
     def to_json
-      to_hash.to_json
+      to_h.to_json
     end
   end
 end

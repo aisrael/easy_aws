@@ -39,11 +39,10 @@ describe EasyAWS::CloudFormation::Template do
   
   it 'works with a full test' do
     template = EasyAWS::CloudFormation::Template.new do
-      description 'Template description'
+      description = 'Template description'
       parameters do
         string 'KeyName', description: 'Name of an existing Amazon EC2 KeyPair for SSH access to the Web Server'
       end
     end
-    
   end
 end

@@ -7,6 +7,6 @@ describe EasyAWS::CloudFormation do
   specify { respond_to? :template }
   describe '.template' do
     subject { EasyAWS::CloudFormation.template }
-    specify { is_a? EasyAWS::CloudFormation::Template::Builder }
+    specify { is_a? EasyAWS::CloudFormation::Template }
   end
 end

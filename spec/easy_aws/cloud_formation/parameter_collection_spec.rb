@@ -55,4 +55,20 @@ describe EasyAWS::CloudFormation::Template::ParameterCollection do
       expect(parameter.type).to eq(:list)
     end
   end
+  specify { respond_to? :to_h }
+  describe '#to_h' do
+    it 'returns the ParameterCollection as a hash' do
+      subject.string 'String parameter'
+      subject.number 'Number parameter'
+      h = subject.to_h
+      expect(h).to eq({
+        'String parameter' => {
+          'Type' => 'String'
+        },
+        'Number parameter' => {
+          'Type' => 'Number'
+        }
+      })
+    end
+  end
 end
