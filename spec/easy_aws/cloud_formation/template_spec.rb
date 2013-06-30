@@ -22,7 +22,7 @@ describe EasyAWS::CloudFormation::Template do
   end
 
   describe '#parameters' do
-    specify { is_a? EasyAWS::CloudFormation::Template::Parameter::Collection }
+    specify { subject.parameters.should be_a EasyAWS::CloudFormation::Template::Parameter::Collection }
     it 'accepts a block for defining parameters, and evaluates it in the Parameter::Collection context' do
       s = nil
       subject.parameters do

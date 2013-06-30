@@ -4,9 +4,7 @@ module EasyAWS
 
     class << self
       def template(params = {}, &block)
-        Template::Builder.new(params).tap {|builder|
-          builder.instance_eval(&block) if block_given?
-        }.build
+        Template.new(params, &block)
       end
     end
   end
