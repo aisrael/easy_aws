@@ -1,20 +1,12 @@
 require 'active_support/core_ext'
 require 'active_support/concern'
-
 require 'json'
 
-module ParameterizedInitializer extend ActiveSupport::Concern
-  def initialize(params = {})
-    params.each {|k, v|
-      setter = "#{k}=".intern 
-      self.send(setter, v) if self.respond_to?(setter)
-    }
-  end
-end
+require 'easy_aws/parameterized_initializer'
 
 module EasyAWS::CloudFormation
   class Template
-    include ParameterizedInitializer
+    include EasyAWS::ParameterizedInitializer
 
     DEFAULT_AWS_TEMPLATE_FORMAT_VERSION = '2010-09-09'
 
