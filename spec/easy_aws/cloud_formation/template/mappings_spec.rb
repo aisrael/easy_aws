@@ -19,6 +19,12 @@ describe EasyAWS::CloudFormation::Template::Mappings do
     expect(map.size).to eq(5)
     expect(map['ap-southeast-1']).to eq('ami-66f28c34')
   end
+  
+  it 'raises an error if you try to provide a value that is not a Hash' do
+    expect {
+      subject.map 'SomeKey', 'NotAHash'
+    }.to raise_error(RuntimeError, 'Mappings only accepts a Hash as values')
+  end
 
   specify '#map accepts a mapping name and a block, and yields the Hash value' do
     subject.map 'RegionMap' do |map|

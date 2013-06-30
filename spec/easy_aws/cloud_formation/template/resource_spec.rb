@@ -16,7 +16,14 @@ describe EasyAWS::CloudFormation::Template::Resource do
         subject.properties {
           add 'MyString', 'one-string-value'
         }
-      }
+      }.to change { subject.properties.size }.by(1)
+    end
+    it 'can yield the object to the block' do
+      expect {
+        subject.properties do |h|
+          h['MyString'] = 'one-string-value'
+        end
+      }.to change { subject.properties.size }.by(1)
     end
   end
 

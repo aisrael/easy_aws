@@ -9,6 +9,7 @@ require 'easy_aws/cloud_formation'
 
 include EasyAWS::CloudFormation
 
+# Define a template
 template = Template.new do
 
   description 'apex-shoresuite-com template'
@@ -29,6 +30,11 @@ template = Template.new do
     "ap-southeast-1" => { "32" => "ami-66f28c34"},
     "ap-northeast-1" => { "32" => "ami-9c03a89d"}
   }
+
+  resources {
+    
+  }
 end
 
+# Express the template as JSON
 puts template.to_json(:pretty)

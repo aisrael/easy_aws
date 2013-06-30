@@ -15,7 +15,7 @@ module EasyAWS
         class Properties < Hash
           def add(name, value)
             store(name, value)
-          end 
+          end
         end
 
         # A Resource::Collection provides some convenience methods over a standard Array
