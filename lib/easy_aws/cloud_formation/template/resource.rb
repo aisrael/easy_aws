@@ -6,11 +6,16 @@ module EasyAWS
 
         attr_accessor :name, :type
 
-        def properties
+        def properties(&block)
           @properties ||= Properties.new
+          @properties.instance_eval(&block) if block_given?
+          @properties
         end
 
-        class Properties < Array
+        class Properties < Hash
+          def add(name, value)
+            store(name, value)
+          end 
         end
 
         # A Resource::Collection provides some convenience methods over a standard Array

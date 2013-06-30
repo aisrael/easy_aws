@@ -37,10 +37,66 @@ describe EasyAWS::CloudFormation::Template do
 
   it 'works with a full test' do
     template = EasyAWS::CloudFormation::Template.new do
-      description = 'Template description'
-      parameters do
-        string 'KeyName', description: 'Name of an existing Amazon EC2 KeyPair for SSH access to the Web Server'
-      end
+    
+      description 'test template'
+    
+      # Define parameters one by one
+      parameter 'KeyName', :string, description: 'The key name to use to connect to the instances'
+    
+      # Or use a parameters 'block' for some syntatic sugar
+      parameters {
+        string 'InstanceType', description: 'The EC2 instance type to use', default: 't1.micro'
+      }
+    
+      # You can also add mappings in a mappings {} block 
+      mapping 'RegionMap', {
+        "us-east-1" => { "32" => "ami-6411e20d"},
+        "us-west-1" => { "32" => "ami-c9c7978c"},
+        "eu-west-1" => { "32" => "ami-37c2f643"},
+        "ap-southeast-1" => { "32" => "ami-66f28c34"},
+        "ap-northeast-1" => { "32" => "ami-9c03a89d"}
+      }
     end
+     
+    template.to_json(:pretty).should eq <<JSON
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "test template",
+  "Parameters": {
+    "KeyName": {
+      "Type": "String",
+      "Description": "The key name to use to connect to the instances"
+    },
+    "InstanceType": {
+      "Type": "String",
+      "Description": "The EC2 instance type to use",
+      "Default": "t1.micro"
+    }
+  },
+  "Mappings": {
+    "Mappings": {
+      "RegionMap": {
+        "us-east-1": {
+          "32": "ami-6411e20d"
+        },
+        "us-west-1": {
+          "32": "ami-c9c7978c"
+        },
+        "eu-west-1": {
+          "32": "ami-37c2f643"
+        },
+        "ap-southeast-1": {
+          "32": "ami-66f28c34"
+        },
+        "ap-northeast-1": {
+          "32": "ami-9c03a89d"
+        }
+      }
+    }
+  }
+}
+JSON
+.chomp # get rid of trailing newline in here document above
+
   end
 end

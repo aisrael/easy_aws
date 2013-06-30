@@ -67,8 +67,9 @@ module EasyAWS::CloudFormation
       }
     end
 
-    def to_json
-      to_h.to_json
+    def to_json(*args)
+      pretty = args.include?(:pretty)
+      pretty ? JSON.pretty_generate(to_h) : to_h.to_json
     end
   end
 end

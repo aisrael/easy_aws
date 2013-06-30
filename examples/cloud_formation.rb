@@ -31,4 +31,4 @@ template = Template.new do
   }
 end
 
-puts JSON.pretty_generate(template.to_h)
+puts template.to_json(:pretty)
