@@ -3,7 +3,7 @@ require 'easy_aws/cloud_formation'
 
 describe EasyAWS::CloudFormation::Template::Mappings do
 
-  specify { respond_to? :map }
+  it { should respond_to :map }
 
   specify '#map accepts a mapping name and a hash' do
     subject.map 'RegionMap', {
@@ -35,7 +35,7 @@ describe EasyAWS::CloudFormation::Template::Mappings do
     expect(map['ap-southeast-1']).to eq('ami-66f28c34')
   end
 
-  specify { respond_to? :to_h }
+  it { should respond_to :to_h }
   specify '#to_h returns the Parameter::Collection as a hash' do
     subject.map 'RegionMap', {
       'us-east-1' => 'ami-6411e20d',

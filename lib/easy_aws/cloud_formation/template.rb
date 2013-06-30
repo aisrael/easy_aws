@@ -1,6 +1,5 @@
 require 'active_support/core_ext'
 require 'active_support/concern'
-require 'json'
 
 require 'easy_aws/parameterized_initializer'
 
@@ -12,6 +11,7 @@ module EasyAWS::CloudFormation
 
     autoload :Parameter, 'easy_aws/cloud_formation/template/parameter'
     autoload :Mappings, 'easy_aws/cloud_formation/template/mappings'
+    autoload :Resource, 'easy_aws/cloud_formation/template/resource'
 
     attr_reader :aws_template_format_version, :resources, :outputs
     attr_accessor :description
@@ -31,6 +31,12 @@ module EasyAWS::CloudFormation
       @mappings ||= Mappings.new
       @mappings.instance_eval(&block) if block_given?
       @mappings
+    end
+
+    def resources(&block)
+      @resources ||= Resource::Collection.new
+      @resources.instance_eval(&block) if block_given?
+      @resources
     end
 
     require 'delegate'
@@ -54,8 +60,10 @@ module EasyAWS::CloudFormation
     def to_h
       {'AWSTemplateFormatVersion' => DEFAULT_AWS_TEMPLATE_FORMAT_VERSION}.tap {|h|
         h['Description'] = @description unless @description.nil?
-        h['Parameters'] = @parameters.to_h unless @parameters.nil? || @parameters.empty?
-        h['Mappings'] = @mappings.to_h unless @mappings.nil? || @mappings.empty?
+        [:parameters, :mappings, :resources].each {|sym|
+          v = instance_variable_get("@#{sym}")
+          h[sym.to_s.capitalize] = v.to_h unless v.nil? || v.empty?
+        }
       }
     end
 

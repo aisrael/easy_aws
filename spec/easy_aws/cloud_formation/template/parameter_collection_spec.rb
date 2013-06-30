@@ -1,11 +1,11 @@
 require 'spec_helper'
-
 require 'easy_aws/cloud_formation'
 
 describe EasyAWS::CloudFormation::Template::Parameter::Collection do
 
-  specify { is_a? Array }
-  specify { respond_to? :build }
+  it { should be_a Array }
+  it { should respond_to :build }
+
   describe '#build' do
     it 'creates and adds a Parameter' do
       subject.build 'Parameter name', :string
@@ -21,8 +21,8 @@ describe EasyAWS::CloudFormation::Template::Parameter::Collection do
       expect(result.name).to eq('Parameter name')
       expect(result.type).to eq(:string)
     end
-  end 
-  specify { respond_to? :number }
+  end
+  it { should respond_to :number }
   describe '#number' do
     it 'creates and adds a number Parameter' do
       subject.number 'Numeric parameter'
@@ -33,7 +33,7 @@ describe EasyAWS::CloudFormation::Template::Parameter::Collection do
       expect(parameter.type).to eq(:number)
     end
   end
-  specify { respond_to? :string }
+  it { should respond_to :string }
   describe '#string' do
     it 'creates and adds a string Parameter' do
       subject.string 'String parameter'
@@ -44,7 +44,7 @@ describe EasyAWS::CloudFormation::Template::Parameter::Collection do
       expect(parameter.type).to eq(:string)
     end
   end
-  specify { respond_to? :list }
+  it { should respond_to :list }
   describe '#number' do
     it 'creates and adds a list Parameter' do
       subject.list 'List parameter'
@@ -55,7 +55,7 @@ describe EasyAWS::CloudFormation::Template::Parameter::Collection do
       expect(parameter.type).to eq(:list)
     end
   end
-  specify { respond_to? :to_h }
+  it { should respond_to :to_h }
   describe '#to_h' do
     it 'returns the Parameter::Collection as a hash' do
       subject.string 'String parameter'
