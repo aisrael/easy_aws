@@ -40,7 +40,24 @@ describe EasyAWS::CloudFormation::Template::Resource do
   end
 
   describe EasyAWS::CloudFormation::Template::Resource::Collection do
-
+    subject { EasyAWS::CloudFormation::Template::Resource::Collection.new }
+    it { should be_a Array }
+    it { should respond_to :add }
+    specify '#add accepts a name and type' do
+      expect {
+        subject.add 'MyQueue', 'AWS::SQS::Queue'
+      }.to change { subject.size }.by(1)
+      expect(subject.first.name).to eq('MyQueue')
+      expect(subject.first.type).to eq('AWS::SQS::Queue')
+    end
+    it { should respond_to :sqs_queue }
+    specify '#sqs_queue adds an "AWS:SQS::Queue"' do
+      expect {
+        subject.sqs_queue 'MyQueue'
+      }.to change { subject.size }.by(1)
+      expect(subject.first.name).to eq('MyQueue')
+      expect(subject.first.type).to eq('AWS::SQS::Queue')
+    end
   end
 
 end

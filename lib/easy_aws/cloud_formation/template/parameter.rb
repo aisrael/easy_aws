@@ -26,11 +26,14 @@ module EasyAWS
           def build(name, type, options = {})
             Parameter.new(options.merge({name: name, type: type})).tap { |parameter| push parameter }
           end
+
+          # define helper methods 'string()', 'number()', 'list()'
           Parameter::TYPES.each {|type|
             define_method type do |name, options = {}|
               build(name, type, options)
             end
           }
+
           def to_h
             each_with_object({}) {|parameter, h| h[parameter.name] = parameter.to_h }
           end

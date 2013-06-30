@@ -22,11 +22,13 @@ describe EasyAWS::CloudFormation::Template do
   describe '#parameters' do
     specify { subject.parameters.should be_a EasyAWS::CloudFormation::Template::Parameter::Collection }
     it 'accepts a block for defining parameters, and evaluates it in the Parameter::Collection context' do
-      parameters = subject.parameters do
-        number 'Number parameter'
-        string 'String parameter'
-      end
-      expect(parameters.size).to eq(2)
+      expect {
+        subject.parameters {
+          number 'Number parameter'
+          string 'String parameter'
+        }
+      }.to change { subject.parameters.size }.by(2)
+      parameters = subject.parameters
       expect(parameters.first.name).to eq('Number parameter')
       expect(parameters.last.name).to eq('String parameter')
     end
@@ -36,27 +38,32 @@ describe EasyAWS::CloudFormation::Template do
   describe '#mappings' do
     specify { subject.mappings.should be_a EasyAWS::CloudFormation::Template::Mappings }
     it 'accepts a block' do
-      mappings = subject.mappings {
-        map 'RegionMap', {
-          "us-east-1" => { "32" => "ami-6411e20d"},
-          "us-west-1" => { "32" => "ami-c9c7978c"},
-          "eu-west-1" => { "32" => "ami-37c2f643"},
-          "ap-southeast-1" => { "32" => "ami-66f28c34"},
-          "ap-northeast-1" => { "32" => "ami-9c03a89d"}
+      expect {
+        subject.mappings {
+          map 'RegionMap', {
+            "us-east-1" => { "32" => "ami-6411e20d"},
+            "us-west-1" => { "32" => "ami-c9c7978c"},
+            "eu-west-1" => { "32" => "ami-37c2f643"},
+            "ap-southeast-1" => { "32" => "ami-66f28c34"},
+            "ap-northeast-1" => { "32" => "ami-9c03a89d"}
+          }
         }
-      }
-      expect(mappings.size).to eq(1)
-      expect(mappings.keys.first).to eq('RegionMap')
+      }.to change { subject.mappings.size }.by(1)
+      expect(subject.mappings.keys.first).to eq('RegionMap')
     end
   end
-  
+
   it { should respond_to :resources }
   describe '#resources' do
     specify { subject.resources.should be_a EasyAWS::CloudFormation::Template::Resource::Collection }
     it 'accepts a block' do
-      resources = subject.resources {
-        
-      }
+      expect {
+        subject.resources {
+          add 'MyQueue', 'AWS::SQS::Queue'
+        }
+      }.to change { subject.resources.size }.by(1)
+      expect(subject.resources.first.name).to eq('MyQueue')
+      expect(subject.resources.first.type).to eq('AWS::SQS::Queue')
     end
   end
 
@@ -80,6 +87,10 @@ describe EasyAWS::CloudFormation::Template do
         "eu-west-1" => { "32" => "ami-37c2f643"},
         "ap-southeast-1" => { "32" => "ami-66f28c34"},
         "ap-northeast-1" => { "32" => "ami-9c03a89d"}
+      }
+
+      resources {
+        sqs_queue 'MyQueue'
       }
     end
 
@@ -117,6 +128,11 @@ describe EasyAWS::CloudFormation::Template do
           "32": "ami-9c03a89d"
         }
       }
+    }
+  },
+  "Resources": {
+    "MyQueue": {
+      "Type": "AWS::SQS::Queue"
     }
   }
 }
