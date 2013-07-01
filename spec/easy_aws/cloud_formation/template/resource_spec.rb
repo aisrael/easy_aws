@@ -51,12 +51,14 @@ describe EasyAWS::CloudFormation::Template::Resource do
       expect(subject.first.type).to eq('AWS::SQS::Queue')
     end
     it { should respond_to :sqs_queue }
-    specify '#sqs_queue adds an "AWS:SQS::Queue"' do
-      expect {
-        subject.sqs_queue 'MyQueue'
-      }.to change { subject.size }.by(1)
-      expect(subject.first.name).to eq('MyQueue')
-      expect(subject.first.type).to eq('AWS::SQS::Queue')
+    describe '#sqs_queue' do
+      specify 'it adds an "AWS:SQS::Queue"' do
+        expect {
+          subject.sqs_queue 'MyQueue'
+        }.to change { subject.size }.by(1)
+        expect(subject.first.name).to eq('MyQueue')
+        expect(subject.first.type).to eq('AWS::SQS::Queue')
+      end
     end
   end
 
