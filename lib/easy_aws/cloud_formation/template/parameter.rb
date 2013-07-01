@@ -2,7 +2,7 @@ module EasyAWS
   module CloudFormation
     class Template
       class Parameter
-        include ParameterizedInitializer
+        include EasyAWS::ParameterizedInitializer
         TYPES = [:string, :number, :list]
         TYPES_MAP = {string: 'String', number: 'Number', list: 'CommaDelimitedList'}
 

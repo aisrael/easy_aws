@@ -1,3 +1,5 @@
+require 'easy_aws/dsl_block'
+
 module EasyAWS
   module CloudFormation
     class Template
@@ -34,9 +36,13 @@ module EasyAWS
           end
 
           TYPES_MAP.each {|method, type|
-            define_method method do |name, options = {}|
-              add(name, type, options)
-            end
+            module_eval <<-EOF
+              def #{method}(name, options = {}, &block)
+                resource = add(name, "#{type}", options)
+                DSLBlock.eval_using(resource, block) if block_given?
+                resource
+              end
+            EOF
           }
 
           def to_h
