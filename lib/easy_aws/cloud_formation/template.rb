@@ -9,11 +9,11 @@ module EasyAWS
       include EasyAWS::ParameterizedInitializer
   
       DEFAULT_AWS_TEMPLATE_FORMAT_VERSION = '2010-09-09'
-  
+
       autoload :Parameter, 'easy_aws/cloud_formation/template/parameter'
       autoload :Mappings, 'easy_aws/cloud_formation/template/mappings'
       autoload :Resource, 'easy_aws/cloud_formation/template/resource'
-  
+
       attr_reader :aws_template_format_version, :resources, :outputs
       attr_accessor :description
   
@@ -57,7 +57,7 @@ module EasyAWS
           mappings.map(*args)
         end
       end
-  
+
       def to_h
         {'AWSTemplateFormatVersion' => DEFAULT_AWS_TEMPLATE_FORMAT_VERSION}.tap {|h|
           h['Description'] = @description unless @description.nil?

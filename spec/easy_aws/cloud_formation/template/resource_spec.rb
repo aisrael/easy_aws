@@ -4,6 +4,8 @@ require 'easy_aws/dsl_block'
 
 describe EasyAWS::CloudFormation::Template::Resource do
 
+  subject { EasyAWS::CloudFormation::Template::Resource.build name: 'ResourceName', type: 'AWS::EC2::Instance' }
+
   it { should respond_to :name }
   it { should respond_to :type }
   it { should respond_to :properties }
@@ -75,8 +77,20 @@ describe EasyAWS::CloudFormation::Template::Resource do
         expect(block_self.target).to equal(resource.properties)
         expect(resource.properties.size).to eq(1)
         expect(resource.properties.some_property).to eq('SomeValue')
-      end 
+      end
     end
+    
+    it { should respond_to :load_balancer }
+    describe '#load_balancer' do
+      it 'adss an "AWS::ElasticLoadBalancing::LoadBalancer"' do
+        resource = subject.load_balancer 'StagingElb'
+        expect(subject.size).to eq(1)
+        expect(resource).to be_a(EasyAWS::CloudFormation::Template::Resource::LoadBalancer)
+        expect(subject.first.name).to eq('StagingElb')
+        expect(subject.first.type).to eq('AWS::ElasticLoadBalancing::LoadBalancer')
+      end
+    end
+    
   end
 
 end
