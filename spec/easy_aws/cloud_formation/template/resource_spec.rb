@@ -13,11 +13,12 @@ describe EasyAWS::CloudFormation::Template::Resource do
       subject.properties.should be_a(EasyAWS::CloudFormation::Template::Resource::Properties)
     end
     it 'accepts a block' do
-      expect {
-        subject.properties {
-          add 'MyString', 'one-string-value'
-        }
-      }.to change { subject.properties.size }.by(1)
+      subject.properties {
+        add 'MyString', 'one-string-value'
+      }
+      # expect {
+      # }.to change { subject.properties.size }.by(1)
+      expect(subject.properties.size).to eq(1)
     end
     it 'can yield the object to the block' do
       expect {
@@ -60,19 +61,20 @@ describe EasyAWS::CloudFormation::Template::Resource do
         expect(subject.first.name).to eq('MyQueue')
         expect(subject.first.type).to eq('AWS::SQS::Queue')
       end
-      it 'accepts a block, passing the instance wrapped using a DSLBlock' do
+      it 'accepts a block, passing the resource Properties wrapped using a DSLBlock' do
         resource = nil
         block_self = nil
         expect {
           resource = subject.sqs_queue 'MyQueue' do
             block_self = self
-            name 'NewName'
+            some_property 'SomeValue'
           end
         }.to change { subject.size }.by(1)
         expect(block_self).to be_a(EasyAWS::DSLBlock)
-        expect(block_self.target).to be_a(EasyAWS::CloudFormation::Template::Resource)
-        expect(block_self.target).to equal(resource)
-        expect(resource.name).to eq('NewName')
+        expect(block_self.target).to be_a(EasyAWS::CloudFormation::Template::Resource::Properties)
+        expect(block_self.target).to equal(resource.properties)
+        expect(resource.properties.size).to eq(1)
+        expect(resource.properties.some_property).to eq('SomeValue')
       end 
     end
   end

@@ -5,6 +5,7 @@ gem 'activesupport', '~> 3.2'
 
 gem 'aws-sdk', '~> 1.8'
 gem 'uuid', '~> 2.3'
+gem 'hashie', '~> 2.0'
 
 # Add dependencies to develop your easy_aws here
 # Include everything needed to run rake, tests, features, etc.

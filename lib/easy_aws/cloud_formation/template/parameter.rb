@@ -3,6 +3,7 @@ module EasyAWS
     class Template
       class Parameter
         include EasyAWS::ParameterizedInitializer
+
         TYPES = [:string, :number, :list]
         TYPES_MAP = {string: 'String', number: 'Number', list: 'CommaDelimitedList'}
 
