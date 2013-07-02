@@ -12,14 +12,21 @@ include EasyAWS::CloudFormation
 # Define a template
 template = Template.new do
 
-  description 'apex-shoresuite-com template'
+  description 'Cloud Formation template'
 
   # Define parameters one by one
   parameter 'KeyName', :string, description: 'The key name to use to connect to the instances'
 
   # Or use a parameters 'block' for some syntatic sugar
   parameters {
-    string 'InstanceType', description: 'The EC2 instance type to use', default: 't1.micro'
+    string 'AvailabilityZone', description: 'The availability zone to create instances in'
+
+    # Also accepts a block
+    string 'InstanceType' do
+      allowed_values %w(t1.micro m1.small m1.medium m1.large)
+      description "EC2 instance type (e.g. #{allowed_values.join(', ')})"
+      default 't1.micro'
+    end
   }
 
   # You can also add mappings in a mappings {} block
@@ -32,7 +39,16 @@ template = Template.new do
   }
 
   resources {
-
+    ec2_instance 'AppInstance1' do
+      availability_zone Ref: 'AvailabilityZone'
+      image_id 'ami-d8450c8a'
+      instance_type Ref: 'InstanceType'
+    end
+    load_balancer 'LoadBalancer' do
+      availability_zones Ref: 'AvailabilityZone'
+      listener 'HTTP', 80, 'HTTP', 80
+      instances Ref: 'AppInstance1'
+    end
   }
 end
 

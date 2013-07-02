@@ -1,3 +1,5 @@
+require 'ostruct'
+
 module EasyAWS
   module CloudFormation
     class Template

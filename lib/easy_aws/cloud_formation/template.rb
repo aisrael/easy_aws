@@ -16,8 +16,9 @@ module EasyAWS
       autoload :Resource, 'easy_aws/cloud_formation/template/resource'
 
       module Referrer
+        # You can also just use Ref: 'Name' directly
         def ref(to)
-          { 'Ref' => to }
+          { Ref: to }
         end
       end
 
