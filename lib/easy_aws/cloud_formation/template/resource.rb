@@ -13,7 +13,7 @@ module EasyAWS
         METHOD_TYPES_MAP = {
           ec2_instance: 'AWS::EC2::Instance',
           load_balancer: ['AWS::ElasticLoadBalancing::LoadBalancer', LoadBalancer],
-          route53_record_set: 'AWS::Route53::RecordSet', 
+          route53_record_set: 'AWS::Route53::RecordSet',
           sqs_queue: 'AWS::SQS::Queue'
         }
         TYPES = ['AWS::EC2::Instance',
@@ -60,7 +60,7 @@ module EasyAWS
 
         def properties(&block)
           @properties ||= Properties.new
-          @properties.instance_eval(&block) if block_given? 
+          @properties.instance_eval(&block) if block_given?
           @properties
         end
 
@@ -90,8 +90,8 @@ module EasyAWS
         class Collection < Array
           def add(name, type, props = {})
             Resource.build(name: name, type: type).tap { |resource|
-              resource.properties.merge! props 
-              push resource 
+              resource.properties.merge! props
+              push resource
             }
           end
 
@@ -103,7 +103,7 @@ module EasyAWS
           end
 
           METHOD_TYPES_MAP.each {|method, v|
-            type = [v].flatten.first # short for v.is_a?(Array) ? v[0] : v 
+            type = [v].flatten.first # short for v.is_a?(Array) ? v[0] : v
             # We can't use define_method because it doesn't support blocks
             unless instance_methods.include?(method)
               module_eval <<-EOF

@@ -7,12 +7,12 @@ module EasyAWS
         TYPES = [:string, :number, :list]
         TYPES_MAP = {string: 'String', number: 'Number', list: 'CommaDelimitedList'}
 
-        attr_accessor :name, :type 
+        attr_accessor :name, :type
 
-        FIELDS_MAP = [:description, :default, :no_echo, :allowed_values, :allowed_pattern, 
+        FIELDS_MAP = [:description, :default, :no_echo, :allowed_values, :allowed_pattern,
           :min_length, :max_length, :min_value, :max_value, :constraint_description].each_with_object({}) {|s, h|
-            attr_accessor s 
-            h[s] = s.to_s.classify 
+            attr_accessor s
+            h[s] = s.to_s.classify
         }
 
         def to_h

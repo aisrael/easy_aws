@@ -118,7 +118,7 @@ module EasyAWS
       def self.from_response(hash = {})
         raise "#{hash} has no :change_info" unless hash.key?(:change_info)
         ChangeInfo.new(hash[:change_info])
-      end 
+      end
       def initialize(params = {})
         ATTRIBUTES.each {|sym| instance_variable_set("@#{sym}", params[sym])}
       end

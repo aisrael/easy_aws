@@ -22,7 +22,7 @@ template = Template.new do
     string 'InstanceType', description: 'The EC2 instance type to use', default: 't1.micro'
   }
 
-  # You can also add mappings in a mappings {} block 
+  # You can also add mappings in a mappings {} block
   mapping 'RegionMap', {
     "us-east-1" => { "32" => "ami-6411e20d"},
     "us-west-1" => { "32" => "ami-c9c7978c"},
@@ -32,7 +32,7 @@ template = Template.new do
   }
 
   resources {
-    
+
   }
 end
 

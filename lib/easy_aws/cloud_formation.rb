@@ -1,5 +1,5 @@
 module EasyAWS
-  module CloudFormation  
+  module CloudFormation
     autoload :Template, 'easy_aws/cloud_formation/template'
 
     class << self

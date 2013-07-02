@@ -79,7 +79,7 @@ describe EasyAWS::CloudFormation::Template::Resource do
         expect(resource.properties.some_property).to eq('SomeValue')
       end
     end
-    
+
     it { should respond_to :load_balancer }
     describe '#load_balancer' do
       it 'adss an "AWS::ElasticLoadBalancing::LoadBalancer"' do
@@ -90,7 +90,7 @@ describe EasyAWS::CloudFormation::Template::Resource do
         expect(subject.first.type).to eq('AWS::ElasticLoadBalancing::LoadBalancer')
       end
     end
-    
+
   end
 
 end

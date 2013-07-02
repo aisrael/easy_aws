@@ -6,7 +6,7 @@ describe EasyAWS::CloudFormation::Template do
 
   describe 'EasyAWS::CloudFormation::Template::DEFAULT_AWS_TEMPLATE_FORMAT_VERSION' do
     specify { EasyAWS::CloudFormation::Template::DEFAULT_AWS_TEMPLATE_FORMAT_VERSION.should eq('2010-09-09') }
-  end 
+  end
   it { should respond_to :aws_template_format_version }
   it { should respond_to :description }
   it { should respond_to :description= }
@@ -16,7 +16,7 @@ describe EasyAWS::CloudFormation::Template do
     expect(template.description).to eq('This is a test description.')
   end
 
-  subject { EasyAWS::CloudFormation::Template.new description: 'Test description.' } 
+  subject { EasyAWS::CloudFormation::Template.new description: 'Test description.' }
 
   it { should respond_to :parameters }
   describe '#parameters' do
@@ -70,7 +70,7 @@ describe EasyAWS::CloudFormation::Template do
   it 'works with a full test' do
     template = EasyAWS::CloudFormation::Template.new do
 
-      description 'test template' 
+      description 'test template'
 
       # Define parameters one by one
       parameter 'KeyName', :string, description: 'The key name to use to connect to the instances'
@@ -80,7 +80,7 @@ describe EasyAWS::CloudFormation::Template do
         string 'InstanceType', description: 'The EC2 instance type to use', default: 't1.micro'
       }
 
-      # You can also add mappings in a mappings {} block 
+      # You can also add mappings in a mappings {} block
       mapping 'RegionMap', {
         "us-east-1" => { "32" => "ami-6411e20d"},
         "us-west-1" => { "32" => "ami-c9c7978c"},
