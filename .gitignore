@@ -49,3 +49,4 @@ doc
 
 # For rubinius:
 #*.rbc
+.env
