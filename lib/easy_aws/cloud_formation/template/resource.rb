@@ -1,10 +1,10 @@
 require 'active_support/core_ext' # for Hash#except
-require 'easy_aws/dsl_block'
 
 module EasyAWS
   module CloudFormation
     class Template
       class Resource
+        include Referrer
 
         autoload :LoadBalancer, 'easy_aws/cloud_formation/template/resource/load_balancer'
 

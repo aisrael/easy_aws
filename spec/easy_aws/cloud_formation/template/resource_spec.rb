@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'easy_aws/cloud_formation'
-require 'easy_aws/dsl_block'
 
 describe EasyAWS::CloudFormation::Template::Resource do
 
@@ -72,7 +71,7 @@ describe EasyAWS::CloudFormation::Template::Resource do
             some_property 'SomeValue'
           end
         }.to change { subject.size }.by(1)
-        expect(block_self).to be_a(EasyAWS::DSLBlock)
+        expect(block_self).to be_a(EasyAWS::CloudFormation::Template::DSLBlock)
         expect(block_self.target).to be_a(EasyAWS::CloudFormation::Template::Resource::Properties)
         expect(block_self.target).to equal(resource.properties)
         expect(resource.properties.size).to eq(1)

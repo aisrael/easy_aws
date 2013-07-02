@@ -1,5 +1,3 @@
-require 'easy_aws/dsl_block'
-
 module EasyAWS
   module CloudFormation
     class Template

@@ -10,9 +10,16 @@ module EasyAWS
 
       DEFAULT_AWS_TEMPLATE_FORMAT_VERSION = '2010-09-09'
 
+      autoload :DSLBlock, 'easy_aws/cloud_formation/template/dsl_block'
       autoload :Parameter, 'easy_aws/cloud_formation/template/parameter'
       autoload :Mappings, 'easy_aws/cloud_formation/template/mappings'
       autoload :Resource, 'easy_aws/cloud_formation/template/resource'
+
+      module Referrer
+        def ref(to)
+          { 'Ref' => to }
+        end
+      end
 
       attr_reader :aws_template_format_version, :resources, :outputs
       attr_accessor :description
@@ -42,6 +49,7 @@ module EasyAWS
 
       require 'delegate'
 
+      # Where the magic inside a Template.new {} block happens
       class DSL < DelegateClass(Template)
         attr_accessor :template
         def initialize(template)
