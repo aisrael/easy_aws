@@ -90,12 +90,14 @@ module EasyAWS
 
         # A Resource::Collection provides some convenience methods over a standard Array
         class Collection < Array
-          def add(name, type, props = {})
+          def add(name, type, props = {}, &block)
             Resource.build(name: name, type: type).tap { |resource|
               resource.properties.merge! props
+              DSLBlock.eval_using(resource.properties, block) if block_given?
               push resource
             }
           end
+          alias_method :resource, :add
 
           # Handle this DSL method specifically
           def load_balancer(name, options = {}, &block)
