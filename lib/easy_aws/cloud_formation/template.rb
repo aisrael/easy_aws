@@ -84,3 +84,27 @@ module EasyAWS
     end
   end
 end
+
+# Here we get clever
+module Fn
+  class << self
+    def Base64(s)
+      { 'Fn::Base64' => s }
+    end
+    def FindInMap(map_name, top_level_key, second_level_key)
+      { 'Fn::FindInMap' => [ map_name, top_level_key, second_level_key ] }
+    end
+    def GetAtt(resource_name, attr_name)
+      { 'Fn::GetAtt' => [ resource_name, attr_name ] }
+    end
+    def GetAZs(region)
+      { 'Fn::GetAZs' => region }
+    end
+    def Join(delim, *args)
+      { 'Fn::Join' => [ delim, args ] }
+    end
+    def Select(index, list)
+      { 'Fn::Select' => [ index, list ] }
+    end
+  end
+end
