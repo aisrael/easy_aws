@@ -32,9 +32,6 @@ module EasyAWS
           raise "Resource type '#{type}' unknown or not yet handled" unless TYPES.include?(type)
           if arr = METHOD_TYPES_MAP.select {|k, v| v.is_a? Array }.find {|k, (type_name, class_ref)| type_name == type }
             method_name, (type_name, class_ref) = arr
-            $stderr.puts "method_name: #{method_name}"
-            $stderr.puts "type_name: #{type_name}"
-            $stderr.puts "class_ref: #{class_ref}"
             # At this point, LoadBalancer.new is also private
             LoadBalancer.send(:new, params)
           else

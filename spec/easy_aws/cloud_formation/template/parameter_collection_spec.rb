@@ -4,11 +4,11 @@ require 'easy_aws/cloud_formation'
 describe EasyAWS::CloudFormation::Template::Parameter::Collection do
 
   it { should be_a Array }
-  it { should respond_to :build }
+  it { should respond_to :add }
 
-  describe '#build' do
+  describe '#add' do
     it 'creates and adds a Parameter' do
-      subject.build 'Parameter name', :string
+      subject.add 'Parameter name', :string
       expect(subject.size).to eq(1)
       expect(subject.first).to be_a(EasyAWS::CloudFormation::Template::Parameter)
       parameter = subject.first
@@ -16,7 +16,7 @@ describe EasyAWS::CloudFormation::Template::Parameter::Collection do
       expect(parameter.type).to eq(:string)
     end
     it 'returns the newly created Parameter' do
-      result = subject.build 'Parameter name', :string
+      result = subject.add 'Parameter name', :string
       expect(result).to be_a(EasyAWS::CloudFormation::Template::Parameter)
       expect(result.name).to eq('Parameter name')
       expect(result.type).to eq(:string)

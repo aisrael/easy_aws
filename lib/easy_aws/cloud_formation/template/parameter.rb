@@ -1,3 +1,5 @@
+require 'easy_aws/dsl_block'
+
 module EasyAWS
   module CloudFormation
     class Template
@@ -12,7 +14,7 @@ module EasyAWS
         FIELDS_MAP = [:description, :default, :no_echo, :allowed_values, :allowed_pattern,
           :min_length, :max_length, :min_value, :max_value, :constraint_description].each_with_object({}) {|s, h|
             attr_accessor s
-            h[s] = s.to_s.classify
+            h[s] = s.to_s.camelize
         }
 
         def to_h
@@ -24,15 +26,19 @@ module EasyAWS
         end
 
         class Collection < Array
-          def build(name, type, options = {})
+          def add(name, type, options = {})
             Parameter.new(options.merge({name: name, type: type})).tap { |parameter| push parameter }
           end
 
           # define helper methods 'string()', 'number()', 'list()'
           Parameter::TYPES.each {|type|
-            define_method type do |name, options = {}|
-              build(name, type, options)
-            end
+            module_eval <<-EOF
+              def #{type}(name, options = {}, &block)
+                parameter = add(name, :#{type}, options)
+                DSLBlock.eval_using(parameter, block) if block_given?
+                parameter
+              end
+            EOF
           }
 
           def to_h

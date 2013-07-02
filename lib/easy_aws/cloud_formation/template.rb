@@ -51,7 +51,7 @@ module EasyAWS
           @template.description = description
         end
         def parameter(name, type, options = {})
-          parameters.build(name, type, options)
+          parameters.add(name, type, options)
         end
         def mapping(*args)
           mappings.map(*args)

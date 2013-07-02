@@ -12,8 +12,15 @@ module EasyAWS
     def initialize(target)
       @target = target
     end
+
+    # Handle references specifically
+    def ref(to)
+      { 'Ref' => to }
+    end
     def method_missing(method_name, *args)
-      if args && args.size == 1
+      if args.size == 0 && (target.is_a?(OpenStruct) || @target.respond_to?(method_name))
+        return @target.send(method_name)
+      elsif args.size == 1
         if @target.is_a?(Hash)
           return @target.store(method_name, args.first)
         else
