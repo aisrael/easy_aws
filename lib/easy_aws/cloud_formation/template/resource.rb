@@ -63,11 +63,16 @@ module EasyAWS
 
         def to_h
           h = { 'Type' => self.type }
-          h['Properties'] = @properties.each_with_object({}) {|(k, v), properties|
-            key = k.is_a?(Symbol) ? k.to_s.camelize : k.to_s
-            properties[key] = v
-          } unless @properties.nil? || @properties.empty?
+          h['Properties'] = camelize_keys(@properties) unless @properties.nil? || @properties.empty?
           h
+        end
+
+        def camelize_keys(hash)
+          hash.each_with_object({}) {|(k, v), h|
+            key = k.is_a?(Symbol) ? k.to_s.camelize : k
+            value = v.is_a?(Hash) ? camelize_keys(v) : v
+            h[key] = value
+          }
         end
 
         class Properties < Hash
