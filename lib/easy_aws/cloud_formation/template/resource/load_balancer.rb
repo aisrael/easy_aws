@@ -7,14 +7,14 @@ module EasyAWS
             properties[:listeners] ||= []
           end
 
-          def listener(lb_protocol, lb_port, instance_protocol, instance_port, certificate_id = nil)
+          def listener(lb_protocol, lb_port, instance_protocol, instance_port, options = {})
             hash = {
               'Protocol' => lb_protocol,
               'LoadBalancerPort' => lb_port,
               'InstanceProtocol' => instance_protocol,
               'InstancePort' => instance_port
             }
-            hash['SSLCertificateId'] = certificate_id unless certificate_id.blank?
+            hash['SSLCertificateId'] = options[:certificate_id] if options.key?(:certificate_id)
             listeners << hash
           end
 
