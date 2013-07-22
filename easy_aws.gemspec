@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "easy_aws"
-  s.version = "0.2.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alistair A. Israel"]
-  s.date = "2013-01-17"
+  s.date = "2013-07-22"
   s.description = "Amazon's Ruby SDK, aws-sdk exposes relatively low-level AWS API operations. easy_aws provides an easier to use, object-oriented wrapper around those."
   s.email = "aisrael@gmail.com"
   s.extra_rdoc_files = [
@@ -23,9 +23,26 @@ Gem::Specification.new do |s|
     "README.md",
     "Rakefile",
     "easy_aws.gemspec",
+    "examples/cloud_formation.rb",
     "lib/easy_aws.rb",
+    "lib/easy_aws/cloud_formation.rb",
+    "lib/easy_aws/cloud_formation/template.rb",
+    "lib/easy_aws/cloud_formation/template/dsl_block.rb",
+    "lib/easy_aws/cloud_formation/template/mappings.rb",
+    "lib/easy_aws/cloud_formation/template/parameter.rb",
+    "lib/easy_aws/cloud_formation/template/resource.rb",
+    "lib/easy_aws/cloud_formation/template/resource/auto_scaling_group.rb",
+    "lib/easy_aws/cloud_formation/template/resource/launch_config.rb",
+    "lib/easy_aws/cloud_formation/template/resource/load_balancer.rb",
     "lib/easy_aws/domain.rb",
+    "lib/easy_aws/parameterized_initializer.rb",
     "lib/easy_aws/version.rb",
+    "spec/easy_aws/cloud_formation/template/mappings_spec.rb",
+    "spec/easy_aws/cloud_formation/template/parameter_collection_spec.rb",
+    "spec/easy_aws/cloud_formation/template/parameter_spec.rb",
+    "spec/easy_aws/cloud_formation/template/resource_spec.rb",
+    "spec/easy_aws/cloud_formation/template_spec.rb",
+    "spec/easy_aws/cloud_formation_spec.rb",
     "spec/easy_aws/domain_spec.rb",
     "spec/easy_aws_spec.rb",
     "spec/spec_helper.rb"
@@ -33,38 +50,41 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/AlistairIsrael/easy_aws"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.24"
+  s.rubygems_version = "1.8.23"
   s.summary = "A Ruby gem that provides a convenient, object-oriented wrapper around the 'low-level' aws-sdk API"
-  s.test_files = ["spec/easy_aws/domain_spec.rb", "spec/easy_aws_spec.rb", "spec/spec_helper.rb"]
+  s.test_files = ["spec/easy_aws/cloud_formation/template/mappings_spec.rb", "spec/easy_aws/cloud_formation/template/parameter_collection_spec.rb", "spec/easy_aws/cloud_formation/template/parameter_spec.rb", "spec/easy_aws/cloud_formation/template/resource_spec.rb", "spec/easy_aws/cloud_formation/template_spec.rb", "spec/easy_aws/cloud_formation_spec.rb", "spec/easy_aws/domain_spec.rb", "spec/easy_aws_spec.rb", "spec/spec_helper.rb"]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<activesupport>, ["~> 3.2"])
+      s.add_runtime_dependency(%q<aws-sdk>, ["~> 1.8"])
+      s.add_runtime_dependency(%q<uuid>, ["~> 2.3"])
       s.add_development_dependency(%q<bundler>, ["~> 1.2"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.4"])
-      s.add_development_dependency(%q<uuid>, ["~> 2.3"])
-      s.add_development_dependency(%q<aws-sdk>, ["~> 1.8"])
       s.add_development_dependency(%q<rspec>, ["~> 2.11"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
     else
+      s.add_dependency(%q<activesupport>, ["~> 3.2"])
+      s.add_dependency(%q<aws-sdk>, ["~> 1.8"])
+      s.add_dependency(%q<uuid>, ["~> 2.3"])
       s.add_dependency(%q<bundler>, ["~> 1.2"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
-      s.add_dependency(%q<uuid>, ["~> 2.3"])
-      s.add_dependency(%q<aws-sdk>, ["~> 1.8"])
       s.add_dependency(%q<rspec>, ["~> 2.11"])
       s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<simplecov>, [">= 0"])
     end
   else
+    s.add_dependency(%q<activesupport>, ["~> 3.2"])
+    s.add_dependency(%q<aws-sdk>, ["~> 1.8"])
+    s.add_dependency(%q<uuid>, ["~> 2.3"])
     s.add_dependency(%q<bundler>, ["~> 1.2"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
-    s.add_dependency(%q<uuid>, ["~> 2.3"])
-    s.add_dependency(%q<aws-sdk>, ["~> 1.8"])
     s.add_dependency(%q<rspec>, ["~> 2.11"])
     s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<simplecov>, [">= 0"])
