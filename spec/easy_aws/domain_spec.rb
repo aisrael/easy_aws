@@ -21,7 +21,7 @@ describe EasyAWS::Domain do
   end
 
   let(:client) { subject.send(:route53_client) }
-  
+
   describe '#create_hosted_zone' do
     subject {
       EasyAWS::Domain.new name: 'example.com'
@@ -67,8 +67,8 @@ describe EasyAWS::Domain do
           {:name=>"example.com.", :type=>"TXT", :ttl=>86400, :resource_records=>[{:value=>"\"google-site-verification=dO9Xtma4XjWm-QRdkMBQMcJdnwPOiux_lIE1kXSaRMY\""}]},
           {:name=>"www.example.com.", :type=>"CNAME", :ttl=>300, :resource_records=>[{:value=>"ec2-23-22-206-201.compute-1.amazonaws.com"}]},
           {:name=>"mail.example.com.", :type=>"CNAME", :ttl=>3600, :resource_records=>[{:value=>"ghs.googlehosted.com"}]}
-        ], 
-        :is_truncated=>false, 
+        ],
+        :is_truncated=>false,
         :max_items=>100
       })
     end
@@ -99,7 +99,7 @@ describe EasyAWS::Domain do
                 ttl: 300,
                 resource_records: [
                   {value: 'www.example.com'}
-                ] 
+                ]
               }
             }
           ]
@@ -107,9 +107,9 @@ describe EasyAWS::Domain do
       }
       response = {
         :change_info=>{
-          :id=>'/change/C3J2ANQZTMF3QM', 
-          :status=>'PENDING', 
-          :submitted_at=>Time.parse('2013-01-14 11:14:23 UTC'), 
+          :id=>'/change/C3J2ANQZTMF3QM',
+          :status=>'PENDING',
+          :submitted_at=>Time.parse('2013-01-14 11:14:23 UTC'),
           :comment=>'Create test.example.com CNAME'
         }
       }
@@ -119,12 +119,12 @@ describe EasyAWS::Domain do
       result.should be_a(EasyAWS::Domain::ChangeInfo)
     end
   end
-  
+
   describe EasyAWS::Domain::ChangeInfo do
     SUBMIT_TIME = Time.parse('2013-01-14 11:14:23 UTC')
-    CHANGE_INFO_HASH = { :id => '/change/C3J2ANQZTMF3QM', 
-        :status =>'PENDING', 
-        :submitted_at => SUBMIT_TIME, 
+    CHANGE_INFO_HASH = { :id => '/change/C3J2ANQZTMF3QM',
+        :status =>'PENDING',
+        :submitted_at => SUBMIT_TIME,
         :comment => 'Create test.example.com CNAME' }
     it 'accepts a hash initializer' do
       change_info = EasyAWS::Domain::ChangeInfo.new CHANGE_INFO_HASH

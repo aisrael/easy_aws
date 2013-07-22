@@ -18,7 +18,7 @@ To run the samples, put your credentials in config.yml as follows:
 END
     exit 1
   end
-  
+
   config = YAML.load(File.read(config_file))
 
   unless config.kind_of?(Hash)
