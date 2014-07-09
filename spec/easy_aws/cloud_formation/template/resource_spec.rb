@@ -14,11 +14,12 @@ describe EasyAWS::CloudFormation::Template::Resource do
       subject.properties.should be_a(EasyAWS::CloudFormation::Template::Resource::Properties)
     end
     it 'accepts a block' do
-      expect {
-        subject.properties {
-          add 'MyString', 'one-string-value'
-        }
-      }.to change { subject.properties.size }.by(1)
+      subject.properties {
+        add 'MyString', 'one-string-value'
+      }
+      # expect {
+      # }.to change { subject.properties.size }.by(1)
+      expect(subject.properties.size).to eq(1)
     end
     it 'can yield the object to the block' do
       expect {
@@ -26,13 +27,6 @@ describe EasyAWS::CloudFormation::Template::Resource do
           h['MyString'] = 'one-string-value'
         end
       }.to change { subject.properties.size }.by(1)
-    end
-  end
-
-  describe '#metadata' do
-    it 'returns a EasyAWS::CloudFormation::Template::Resource::Metadata' do
-      expect(subject.metadata).to_not be_nil
-      expect(subject.metadata).to be_a(EasyAWS::CloudFormation::Template::Resource::Metadata)
     end
   end
 

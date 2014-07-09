@@ -8,7 +8,7 @@ module EasyAWS
 
         # These helpers have to come before the autoload below, otherwise they won't be seen by subclasses  
         class << self
-
+          
           # Allows us to do:
           #
           #    class LoadBalancer < Resource
@@ -72,7 +72,7 @@ module EasyAWS
           def build(params = {})
             name = params[:name]
             type = params[:type]
-            raise 'Resource name cannot be blank or empty' if name.blank?
+            raise "Resource name cannot be blank or empty" if name.blank?
             raise "Resource name '#{name}' is non alphanumeric" unless name =~ /^[[:alnum:]]+$/
             raise 'Resource type cannot be black or empty' if type.blank?
             raise "Resource type '#{type}' unknown or not yet handled" unless TYPES.include?(type)
@@ -91,7 +91,7 @@ module EasyAWS
         def initialize(params = {})
           @name = params[:name] if params[:name]
           @type = params[:type] if params[:type]
-          raise 'Resource name cannot be blank or empty' if @name.blank?
+          raise "Resource name cannot be blank or empty" if @name.blank?
           raise "Resource name '#{@name}' is non alphanumeric" unless @name =~ /^[[:alnum:]]+$/
           raise 'Resource type cannot be black or empty' if @type.blank?
           raise "Resource type '#{@type}' unknown or not yet handled" unless TYPES.include?(@type)
@@ -107,10 +107,6 @@ module EasyAWS
           @properties ||= Properties.new
           @properties.instance_eval(&block) if block_given?
           @properties
-        end
-
-        def metadata
-          @metadata ||= Metadata.new
         end
 
         def to_h

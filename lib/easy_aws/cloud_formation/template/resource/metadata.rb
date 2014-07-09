@@ -2,7 +2,7 @@ module EasyAWS
   module CloudFormation
     class Template
       class Resource
-        class Metadata
+        class Metadata < Hash
 
         end
       end
