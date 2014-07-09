@@ -16,6 +16,8 @@ group :development do
   # Use rspec for tests
   gem 'rspec', '~> 2.11'
 
+  gem 'vcr', '~> 2.9.2'
+
   gem 'rcov', '>= 0', :platforms => :mri_18
   gem 'simplecov', :platforms => :mri_19
 end

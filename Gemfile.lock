@@ -71,6 +71,7 @@ GEM
     uuid (2.3.7)
       macaddr (~> 1.0)
     uuidtools (2.1.4)
+    vcr (2.9.2)
 
 PLATFORMS
   ruby
@@ -85,3 +86,4 @@ DEPENDENCIES
   rspec (~> 2.11)
   simplecov
   uuid (~> 2.3)
+  vcr (~> 2.9.2)
