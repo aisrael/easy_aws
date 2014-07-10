@@ -3,6 +3,7 @@ require 'spec_helper'
 require 'uuid'
 require 'time'
 
+# chosen by fair dice roll, guaranteed to be random
 HOSTED_ZONE_ID = 'Z5EMV0UQ55K3F'
 
 describe EasyAWS::Domain do
@@ -22,9 +23,9 @@ describe EasyAWS::Domain do
 
   let(:client) { subject.send(:route53_client) }
 
-  describe '#create_hosted_zone' do
+  describe '#create_hosted_zone', vcr: true do
     subject {
-      EasyAWS::Domain.new name: 'example.com'
+      EasyAWS::Domain.new name: 'alistair.com'
     }
     it 'raises an error if a hosted_zone_id is already present' do
       subject.hosted_zone_id = HOSTED_ZONE_ID
@@ -33,27 +34,8 @@ describe EasyAWS::Domain do
       }.to raise_error("hosted_zone_id already specified: #{HOSTED_ZONE_ID}")
     end
     it 'returns the newly created hosted zone id' do
-      id  = rand(36**13).to_s(36).upcase
-      ref = UUID.new.generate
-
-      client.stub(:create_hosted_zone).with(name: 'example.com', caller_reference: ref).and_return({
-        :hosted_zone => {
-          :id => "/hosted_zone/#{id}",
-          :name => 'example.com',
-          :caller_reference => ref,
-          :resource_record_set_count => 2
-        },
-        :change_info => {
-          :id => rand(36**13).to_s(36).upcase,
-          :status => 'PENDING',
-          :submitted_at => Time.now.utc
-        },
-        :delegation_set => {
-          :name_servers => %w(ns-1094.awsdns-08.org ns-955.awsdns-55.net ns-1716.awsdns-22.co.uk ns-273.awsdns-34.com)
-        }
-      })
-      result = subject.create_hosted_zone :caller_reference => ref
-      result.should eq("/hosted_zone/#{id}")
+      result = subject.create_hosted_zone caller_reference: 'bb0efe30-ea3b-0131-908d-3c15c2ba2142'
+      result.should eq('/hostedzone/ZIIP60ZWBI5MW')
     end
   end
 

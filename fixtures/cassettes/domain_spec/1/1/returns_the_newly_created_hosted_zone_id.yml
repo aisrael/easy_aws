@@ -1,0 +1,47 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://route53.amazonaws.com/2012-12-12/hostedzone
+    body:
+      encoding: US-ASCII
+      string: ! "<CreateHostedZoneRequest xmlns=\"https://route53.amazonaws.com/doc/2012-12-12/\">\n
+        \ <Name>alistair.com</Name>\n  <CallerReference>bb0efe30-ea3b-0131-908d-3c15c2ba2142</CallerReference>\n</CreateHostedZoneRequest>"
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      Content-Length:
+      - '208'
+      User-Agent:
+      - aws-sdk-ruby/1.11.3 ruby/1.9.3 x86_64-darwin13.3.0
+      Date:
+      - Thu, 10 Jul 2014 08:40:12 GMT
+      X-Amzn-Authorization:
+      - AWS3-HTTPS AWSAccessKeyId={{AWS_ACCESS_KEY}},Algorithm=HmacSHA256,Signature=71yLnMFTaWJq2kd84eBfiyEuifpSKt3MbfnGMxkvmr0=
+      Accept:
+      - ! '*/*'
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      X-Amzn-Requestid:
+      - d025e925-080d-11e4-9378-61d111bcaa4c
+      Location:
+      - https://route53.amazonaws.com/2012-12-12//hostedzone/ZIIP60ZWBI5MW
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '715'
+      Date:
+      - Thu, 10 Jul 2014 08:40:14 GMT
+    body:
+      encoding: US-ASCII
+      string: ! '<?xml version="1.0"?>
+
+        <CreateHostedZoneResponse xmlns="https://route53.amazonaws.com/doc/2012-12-12/"><HostedZone><Id>/hostedzone/ZIIP60ZWBI5MW</Id><Name>alistair.com.</Name><CallerReference>bb0efe30-ea3b-0131-908d-3c15c2ba2142</CallerReference><Config/><ResourceRecordSetCount>2</ResourceRecordSetCount></HostedZone><ChangeInfo><Id>/change/CNZORT4TYTIKB</Id><Status>PENDING</Status><SubmittedAt>2014-07-10T08:40:15.427Z</SubmittedAt></ChangeInfo><DelegationSet><NameServers><NameServer>ns-1801.awsdns-33.co.uk</NameServer><NameServer>ns-695.awsdns-22.net</NameServer><NameServer>ns-58.awsdns-07.com</NameServer><NameServer>ns-1437.awsdns-51.org</NameServer></NameServers></DelegationSet></CreateHostedZoneResponse>'
+    http_version: 
+  recorded_at: Thu, 10 Jul 2014 08:40:15 GMT
+recorded_with: VCR 2.9.2

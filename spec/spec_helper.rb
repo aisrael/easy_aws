@@ -1,4 +1,41 @@
 require 'easy_aws'
+require 'dotenv'
+require 'vcr'
+
+Dotenv.load
+
+SPEC_DIR=File.dirname(__FILE__[%r{#{Dir.pwd}\/(.*)}, 1])
+puts "SPEC_DIR: #{SPEC_DIR}"
+puts "ENV['AWS_ACCESS_KEY']: #{ENV['AWS_ACCESS_KEY']}"
+
+VCR.configure do |c|
+  c.cassette_library_dir = File.expand_path('../../fixtures/cassettes', __FILE__)
+  c.hook_into :webmock
+
+  c.filter_sensitive_data('{{AWS_ACCESS_KEY}}') { ENV['AWS_ACCESS_KEY'] }
+
+  c.default_cassette_options = {
+    # IF NOT RUNNING IN CI:
+    #   If no cassette exists for a spec, VCR will record. Afterwards, VCR will
+    #   stop recording for that spec. If new requests are made that are not
+    #   matched by anything in the cassette, an error is thrown
+    #
+    # IF RUNNING IN CI:
+    # Test should immediately throw an error if no cassette exists for a
+    # given example that needs one.
+    record: (ENV['CI'] || ENV['TRAVIS'] ? :none : :once),
+
+    match_requests_on: [:method, :uri, :body, :host, :path, :query],
+
+    # Strict mocking
+    # Inspired by: http://myronmars.to/n/dev-blog/2012/06/thoughts-on-mocking
+    allow_unused_http_interactions: false,
+
+    # Enable ERB in the cassettes.
+    # Reference: http://goo.gl/aPXYk
+    erb: true
+  }
+end
 
 require 'yaml'
 
@@ -40,4 +77,18 @@ end
 RSpec.configure do |config|
   config.filter_run_excluding :skip => true, :integration => true
   config_aws if config.inclusion_filter[:integration]
+
+  config.before(vcr: true) do |x|
+    normalized_class_name = x.class.to_s.sub(/^RSpec::Core::ExampleGroup::/, '').gsub('Nested_', '::').split('::')
+    example_file_basename = x.example.file_path[%r{./spec/easy_aws/(.*)\.rb}, 1]
+    normalized_description = x.example.description.gsub(/\s/, '_')
+    cassette_name = File.join([example_file_basename] + normalized_class_name + [normalized_description])
+
+    ::VCR.insert_cassette cassette_name
+
+    AWS.config
+  end
+  config.after(vcr: true) do
+    ::VCR.eject_cassette
+  end
 end

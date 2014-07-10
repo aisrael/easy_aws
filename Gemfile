@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source 'http://rubygems.org'
 
 # Add dependencies required to use easy_aws here
 gem 'activesupport', '~> 3.2'
@@ -13,10 +13,13 @@ group :development do
   gem 'rdoc', '~> 3.12'
   gem 'jeweler', '~> 1.8.4'
 
+  gem 'dotenv'
+
   # Use rspec for tests
   gem 'rspec', '~> 2.11'
 
   gem 'vcr', '~> 2.9.2'
+  gem 'webmock'
 
   gem 'rcov', '>= 0', :platforms => :mri_18
   gem 'simplecov', :platforms => :mri_19
