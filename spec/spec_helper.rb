@@ -4,10 +4,6 @@ require 'vcr'
 
 Dotenv.load
 
-SPEC_DIR=File.dirname(__FILE__[%r{#{Dir.pwd}\/(.*)}, 1])
-puts "SPEC_DIR: #{SPEC_DIR}"
-puts "ENV['AWS_ACCESS_KEY']: #{ENV['AWS_ACCESS_KEY']}"
-
 VCR.configure do |c|
   c.cassette_library_dir = File.expand_path('../../fixtures/cassettes', __FILE__)
   c.hook_into :webmock
@@ -25,7 +21,7 @@ VCR.configure do |c|
     # given example that needs one.
     record: (ENV['CI'] || ENV['TRAVIS'] ? :none : :once),
 
-    match_requests_on: [:method, :uri, :body, :host, :path, :query],
+    match_requests_on: [:method, :uri, :host, :path, :query],
 
     # Strict mocking
     # Inspired by: http://myronmars.to/n/dev-blog/2012/06/thoughts-on-mocking
@@ -79,7 +75,7 @@ RSpec.configure do |config|
   config_aws if config.inclusion_filter[:integration]
 
   config.before(vcr: true) do |x|
-    normalized_class_name = x.class.to_s.sub(/^RSpec::Core::ExampleGroup::/, '').gsub('Nested_', '::').split('::')
+    normalized_class_name = x.class.to_s.sub(/^RSpec::Core::ExampleGroup::/, '').gsub(/Nested_\d+/, 'Nested').split('::')
     example_file_basename = x.example.file_path[%r{./spec/easy_aws/(.*)\.rb}, 1]
     normalized_description = x.example.description.gsub(/\s/, '_')
     cassette_name = File.join([example_file_basename] + normalized_class_name + [normalized_description])
