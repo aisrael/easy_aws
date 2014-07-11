@@ -36,16 +36,16 @@ describe EasyAWS::CloudFormation::Template do
 
   it { should respond_to :mappings }
   describe '#mappings' do
-    specify { subject.mappings.should be_a EasyAWS::CloudFormation::Template::Mappings }
+    specify { expect(subject.mappings).to be_a EasyAWS::CloudFormation::Template::Mappings }
     it 'accepts a block' do
       expect {
         subject.mappings {
           map 'RegionMap', {
-            "us-east-1" => { "32" => "ami-6411e20d"},
-            "us-west-1" => { "32" => "ami-c9c7978c"},
-            "eu-west-1" => { "32" => "ami-37c2f643"},
-            "ap-southeast-1" => { "32" => "ami-66f28c34"},
-            "ap-northeast-1" => { "32" => "ami-9c03a89d"}
+            'us-east-1' => { '32' => 'ami-6411e20d'},
+            'us-west-1' => { '32' => 'ami-c9c7978c'},
+            'eu-west-1' => { '32' => 'ami-37c2f643'},
+            'ap-southeast-1' => { '32' => 'ami-66f28c34'},
+            'ap-northeast-1' => { '32' => 'ami-9c03a89d'}
           }
         }
       }.to change { subject.mappings.size }.by(1)
@@ -55,7 +55,7 @@ describe EasyAWS::CloudFormation::Template do
 
   it { should respond_to :resources }
   describe '#resources' do
-    specify { subject.resources.should be_a EasyAWS::CloudFormation::Template::Resource::Collection }
+    specify { expect(subject.resources).to be_a EasyAWS::CloudFormation::Template::Resource::Collection }
     it 'accepts a block' do
       expect {
         subject.resources {
@@ -82,11 +82,11 @@ describe EasyAWS::CloudFormation::Template do
 
       # You can also add mappings in a mappings {} block
       mapping 'RegionMap', {
-        "us-east-1" => { "32" => "ami-6411e20d"},
-        "us-west-1" => { "32" => "ami-c9c7978c"},
-        "eu-west-1" => { "32" => "ami-37c2f643"},
-        "ap-southeast-1" => { "32" => "ami-66f28c34"},
-        "ap-northeast-1" => { "32" => "ami-9c03a89d"}
+        'us-east-1' => { '32' => 'ami-6411e20d'},
+        'us-west-1' => { '32' => 'ami-c9c7978c'},
+        'eu-west-1' => { '32' => 'ami-37c2f643'},
+        'ap-southeast-1' => { '32' => 'ami-66f28c34'},
+        'ap-northeast-1' => { '32' => 'ami-9c03a89d'}
       }
 
       resources {
@@ -94,7 +94,7 @@ describe EasyAWS::CloudFormation::Template do
       }
     end
 
-    template.to_json(:pretty).should eq <<JSON
+    expect(template.to_json(:pretty)).to eq <<JSON
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "test template",
