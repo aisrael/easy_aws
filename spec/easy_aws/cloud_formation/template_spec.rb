@@ -5,7 +5,7 @@ require 'easy_aws/cloud_formation'
 describe EasyAWS::CloudFormation::Template do
 
   describe 'EasyAWS::CloudFormation::Template::DEFAULT_AWS_TEMPLATE_FORMAT_VERSION' do
-    specify { EasyAWS::CloudFormation::Template::DEFAULT_AWS_TEMPLATE_FORMAT_VERSION.should eq('2010-09-09') }
+    specify { expect(EasyAWS::CloudFormation::Template::DEFAULT_AWS_TEMPLATE_FORMAT_VERSION).to eq('2010-09-09') }
   end
   it { should respond_to :aws_template_format_version }
   it { should respond_to :description }

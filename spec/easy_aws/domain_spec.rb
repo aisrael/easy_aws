@@ -34,8 +34,8 @@ describe EasyAWS::Domain do
       }.to raise_error("hosted_zone_id already specified: #{HOSTED_ZONE_ID}")
     end
     it 'returns the newly created hosted zone id' do
-      result = subject.create_hosted_zone caller_reference: 'bb0efe30-ea3b-0131-908d-3c15c2ba2142'
-      result.should eq('/hostedzone/ZIIP60ZWBI5MW')
+      result = subject.create_hosted_zone caller_reference: '43f5e610-eb21-0131-908e-3c15c2ba2142'
+      result.should eq('/hostedzone/ZNVITS3EU6P64')
     end
   end
 
@@ -115,7 +115,7 @@ describe EasyAWS::Domain do
       change_info.submitted_at.should eq(SUBMIT_TIME)
       change_info.comment.should eq('Create test.example.com CNAME')
     end
-    describe '.from_response' do
+    describe '#from_response' do
       it 'extracts the :change_info from the response hash' do
         change_info = EasyAWS::Domain::ChangeInfo.from_response :change_info => CHANGE_INFO_HASH
         change_info.id.should eq('/change/C3J2ANQZTMF3QM')

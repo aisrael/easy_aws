@@ -75,10 +75,17 @@ RSpec.configure do |config|
   config_aws if config.inclusion_filter[:integration]
 
   config.before(vcr: true) do |x|
-    normalized_class_name = x.class.to_s.sub(/^RSpec::Core::ExampleGroup::/, '').gsub(/Nested_\d+/, 'Nested').split('::')
-    example_file_basename = x.example.file_path[%r{./spec/easy_aws/(.*)\.rb}, 1]
-    normalized_description = x.example.description.gsub(/\s/, '_')
-    cassette_name = File.join([example_file_basename] + normalized_class_name + [normalized_description])
+    class_hierarchy = []
+    x.class.to_s.sub(/^RSpec::Core::/, '').split('::').reverse.inject(x.example.metadata) { |m|
+      unless m[:description_args].compact.empty?
+        class_hierarchy += m[:description_args].map {|a|
+          a.to_s.split('::')
+        }
+      end
+      m[:example_group]
+    }
+    cassette_name = File.join(class_hierarchy.reverse.flatten.map {|s| s.sub(/^[#.]/, '').gsub(/,\s+/, '_').gsub(':','').gsub(/\s/,'_')})
+    # puts cassette_name
 
     ::VCR.insert_cassette cassette_name
 
