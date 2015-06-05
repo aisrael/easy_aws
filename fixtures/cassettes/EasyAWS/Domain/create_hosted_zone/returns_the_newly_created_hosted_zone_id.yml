@@ -2,10 +2,10 @@
 http_interactions:
 - request:
     method: post
-    uri: https://route53.amazonaws.com/2012-12-12/hostedzone
+    uri: https://route53.amazonaws.com/2013-04-01/hostedzone
     body:
       encoding: US-ASCII
-      string: ! "<CreateHostedZoneRequest xmlns=\"https://route53.amazonaws.com/doc/2012-12-12/\">\n
+      string: ! "<CreateHostedZoneRequest xmlns=\"https://route53.amazonaws.com/doc/2013-04-01/\">\n
         \ <Name>alistair.com</Name>\n  <CallerReference>43f5e610-eb21-0131-908e-3c15c2ba2142</CallerReference>\n</CreateHostedZoneRequest>"
     headers:
       Content-Type:
@@ -30,7 +30,7 @@ http_interactions:
       X-Amzn-Requestid:
       - 5b2405dd-08f3-11e4-a2eb-11d7256f52e4
       Location:
-      - https://route53.amazonaws.com/2012-12-12//hostedzone/ZNVITS3EU6P64
+      - https://route53.amazonaws.com/2013-04-01//hostedzone/ZNVITS3EU6P64
       Content-Type:
       - text/xml
       Content-Length:
@@ -41,7 +41,7 @@ http_interactions:
       encoding: US-ASCII
       string: ! '<?xml version="1.0"?>
 
-        <CreateHostedZoneResponse xmlns="https://route53.amazonaws.com/doc/2012-12-12/"><HostedZone><Id>/hostedzone/ZNVITS3EU6P64</Id><Name>alistair.com.</Name><CallerReference>43f5e610-eb21-0131-908e-3c15c2ba2142</CallerReference><Config/><ResourceRecordSetCount>2</ResourceRecordSetCount></HostedZone><ChangeInfo><Id>/change/CJPM11H1LVUTS</Id><Status>PENDING</Status><SubmittedAt>2014-07-11T12:03:23.038Z</SubmittedAt></ChangeInfo><DelegationSet><NameServers><NameServer>ns-1932.awsdns-49.co.uk</NameServer><NameServer>ns-699.awsdns-23.net</NameServer><NameServer>ns-24.awsdns-03.com</NameServer><NameServer>ns-1314.awsdns-36.org</NameServer></NameServers></DelegationSet></CreateHostedZoneResponse>'
+        <CreateHostedZoneResponse xmlns="https://route53.amazonaws.com/doc/2013-04-01/"><HostedZone><Id>/hostedzone/ZNVITS3EU6P64</Id><Name>alistair.com.</Name><CallerReference>43f5e610-eb21-0131-908e-3c15c2ba2142</CallerReference><Config/><ResourceRecordSetCount>2</ResourceRecordSetCount></HostedZone><ChangeInfo><Id>/change/CJPM11H1LVUTS</Id><Status>PENDING</Status><SubmittedAt>2014-07-11T12:03:23.038Z</SubmittedAt></ChangeInfo><DelegationSet><NameServers><NameServer>ns-1932.awsdns-49.co.uk</NameServer><NameServer>ns-699.awsdns-23.net</NameServer><NameServer>ns-24.awsdns-03.com</NameServer><NameServer>ns-1314.awsdns-36.org</NameServer></NameServers></DelegationSet></CreateHostedZoneResponse>'
     http_version: 
   recorded_at: Fri, 11 Jul 2014 12:03:20 GMT
 recorded_with: VCR 2.9.2
